@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lớp 6A2 - THCS Long Trường</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        @keyframes floatOver { 0% { transform: translateX(-500px); } 100% { transform: translateX(calc(100vw + 500px)); } }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 0.8; transform: scale(1.2); } }
+        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .animate-spin-slow { animation: spin-slow 30s linear infinite; }
+        .animate-twinkle { animation: twinkle linear infinite; }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #bae6fd; border-radius: 20px; border: 2px solid white; }
+        .cloud-animate { position: absolute; opacity: 0.5; filter: blur(1px); pointer-events: none; }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-[#e0f2fe] via-[#38bdf8] to-[#0c4a6e] relative selection:bg-blue-200 text-slate-800">
+
+    <!-- SAO LẤP LÁNH -->
+    <div id="stars-container" class="fixed inset-0 pointer-events-none"></div>
+
+    <!-- MẶT TRỜI -->
+    <div class="absolute top-10 right-10 z-0 scale-75 md:scale-100">
+        <div class="relative flex items-center justify-center">
+            <div class="absolute w-56 h-56 bg-yellow-300 rounded-full blur-[60px] opacity-40 animate-pulse"></div>
+            <div class="w-32 h-32 bg-gradient-to-tr from-yellow-200 via-yellow-400 to-orange-500 rounded-full shadow-[0_0_100px_rgba(251,191,36,0.8)] relative z-10 flex items-center justify-center">
+                <i data-lucide="sun" class="w-16 h-16 text-white/90 drop-shadow-xl"></i>
+            </div>
+            <div class="absolute inset-0 animate-spin-slow" id="sun-rays"></div>
+        </div>
+    </div>
+
+    <!-- MÂY TRÔI -->
+    <div id="clouds-container" class="fixed inset-0 pointer-events-none z-20 overflow-hidden"></div>
+
+    <div class="relative z-10 container mx-auto px-6 py-16">
+        <!-- Header -->
+        <header class="text-center mb-20 text-blue-900">
+            <div class="inline-flex flex-col items-center gap-2 mb-4 px-8 py-3 bg-white/40 backdrop-blur-md rounded-3xl text-sm font-black text-blue-800 border border-white/40 shadow-lg">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-yellow-500"></i> NIÊN KHÓA 2025 - 2026
+                </div>
+                <div class="text-[10px] tracking-[0.2em] opacity-70 uppercase">Trường THCS Long Trường</div>
+            </div>
+            <h1 class="text-7xl md:text-9xl font-black mb-8 drop-shadow-[0_8px_8px_rgba(0,0,0,0.15)] tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-blue-900 via-blue-800 to-blue-700">
+                LỚP 6A2
+            </h1>
+            <div class="inline-block bg-white/40 backdrop-blur-xl px-12 py-5 rounded-[2.5rem] border border-white/60 shadow-2xl transform -rotate-1 hover:rotate-0 transition-all">
+                <p class="text-2xl md:text-3xl italic font-black text-blue-900/90 drop-shadow-sm">"Ngôi nhà chung rực rỡ sắc màu"</p>
+            </div>
+        </header>
+
+        <!-- Giáo viên chủ nhiệm -->
+        <section class="max-w-4xl mx-auto mb-32 relative group">
+            <div class="absolute -inset-4 bg-white/20 blur-2xl rounded-[4rem] -z-10 group-hover:bg-blue-300/30 transition-all duration-700"></div>
+            <div class="bg-white/85 backdrop-blur-3xl rounded-[4rem] p-12 shadow-2xl border border-white flex flex-col md:flex-row items-center gap-12 transform hover:-translate-y-2 transition-all duration-700">
+                <div class="relative">
+                    <div class="w-56 h-56 bg-gradient-to-tr from-blue-500 via-sky-300 to-indigo-400 rounded-[3rem] flex items-center justify-center text-8xl shadow-2xl border-[10px] border-white overflow-hidden shrink-0 rotate-3 group-hover:rotate-0 transition-all duration-700">
+                        👩‍🏫
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 bg-rose-500 text-white p-4 rounded-[1.5rem] shadow-xl animate-bounce border-4 border-white">
+                        <i data-lucide="heart" class="w-8 h-8 fill-white text-white"></i>
+                    </div>
+                </div>
+                <div class="text-center md:text-left flex-1">
+                    <h2 class="text-blue-500 font-black text-sm uppercase tracking-[0.4em] mb-4">Giáo viên chủ nhiệm</h2>
+                    <h3 class="text-5xl md:text-6xl font-black text-blue-950 mb-6 leading-tight drop-shadow-sm">Cô Nguyễn Thị Hồng Nhung</h3>
+                    <p class="text-blue-900/80 leading-relaxed italic text-xl font-bold bg-blue-50/50 p-6 rounded-[2rem] border border-blue-100">
+                        "Chào các con học sinh lớp 6A2 - Long Trường. Hãy cùng cô viết nên những trang kỷ niệm đẹp nhất dưới mái trường này nhé!"
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Grid học sinh -->
+        <div class="text-center mb-16">
+            <h2 class="text-5xl font-black text-white mb-10 uppercase tracking-widest drop-shadow-[0_4px_4px_rgba(0,0,0,0.2)] flex items-center justify-center gap-6">
+                <div class="h-1.5 w-16 bg-white/50 rounded-full hidden md:block"></div>
+                Sơ Đồ Lớp Mình
+                <div class="h-1.5 w-16 bg-white/50 rounded-full hidden md:block"></div>
+            </h2>
+            <div class="flex flex-wrap justify-center gap-6 text-xs font-black uppercase tracking-widest">
+                <span class="flex items-center gap-3 bg-white/30 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/30 text-white shadow-lg">
+                    <div class="w-4 h-4 bg-white/50 rounded-full"></div> Slot trống
+                </span>
+                <span class="flex items-center gap-3 bg-white/30 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/30 text-white shadow-lg">
+                    <div class="w-4 h-4 bg-sky-400 rounded-full shadow-[0_0_12px_rgba(56,189,248,1)]"></div> Đã chọn
+                </span>
+            </div>
+        </div>
+
+        <div id="student-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8 relative pb-32">
+            <!-- Grid generated by JS -->
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div id="modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 md:p-8 bg-sky-950/80 backdrop-blur-xl transition-all">
+        <div class="bg-white rounded-[4rem] w-full max-w-2xl overflow-hidden shadow-[0_32px_64px_rgba(0,0,0,0.5)] border-[12px] border-white/20 relative">
+            
+            <div id="modal-header" class="p-10 flex justify-between items-center text-white bg-gradient-to-r from-sky-600 to-blue-700">
+                <div class="flex items-center gap-5">
+                    <div class="bg-white/20 p-4 rounded-[1.5rem] shadow-inner" id="modal-icon">
+                        <i data-lucide="user" class="w-7 h-7"></i>
+                    </div>
+                    <div>
+                        <h3 id="modal-title" class="text-3xl font-black tracking-tight uppercase leading-none">Thông Tin</h3>
+                        <p id="modal-subtitle" class="text-sm text-white/70 mt-2 font-black tracking-[0.3em] uppercase"></p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="editCurrentProfile()" id="edit-btn" class="hidden bg-white/20 hover:bg-white/40 p-4 rounded-full transition-all group">
+                        <i data-lucide="edit-3" class="w-6 h-6 group-hover:rotate-12 transition-transform"></i>
+                    </button>
+                    <button onclick="closeModal()" class="bg-white/20 hover:bg-red-500 p-4 rounded-full transition-all">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="modal-content" class="p-10 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar bg-slate-50/50">
+                <!-- Content generated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="relative z-30 text-center py-20">
+        <div class="max-w-md mx-auto px-6">
+            <div class="bg-white/20 backdrop-blur-2xl px-10 py-6 rounded-[3rem] border border-white/40 text-white font-black tracking-[0.3em] uppercase text-sm shadow-2xl flex flex-col items-center justify-center gap-2">
+                <div class="flex items-center gap-4">
+                    <div class="w-3 h-3 bg-white rounded-full animate-ping"></div>
+                    6A2 - MÃI MÃI MỘT GIA ĐÌNH
+                    <div class="w-3 h-3 bg-white rounded-full animate-ping"></div>
+                </div>
+            </div>
+            <div class="mt-8">
+                <p class="text-white font-black text-base uppercase tracking-[0.3em] drop-shadow-md">Trường THCS Long Trường</p>
+                <p class="text-white/60 font-black text-[10px] uppercase tracking-widest italic">Niên khóa 2025 - 2026</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- DATA MANAGEMENT ---
+        let students = JSON.parse(localStorage.getItem('6A2_students') || '{}');
+        let selectedSlot = null;
+        let viewMode = 'view'; // 'view', 'edit', 'auth'
+
+        function saveToLocal() {
+            localStorage.setItem('6A2_students', JSON.stringify(students));
+            renderGrid();
+        }
+
+        // --- UI RENDERERS ---
+        function initDecorations() {
+            // Stars
+            const starsContainer = document.getElementById('stars-container');
+            for (let i = 0; i < 40; i++) {
+                const star = document.createElement('div');
+                star.className = 'absolute bg-white rounded-full opacity-40 animate-twinkle';
+                star.style.width = star.style.height = (Math.random() * 3 + 1) + 'px';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                star.style.animationDuration = (3 + Math.random() * 4) + 's';
+                starsContainer.appendChild(star);
+            }
+
+            // Clouds
+            const cloudsContainer = document.getElementById('clouds-container');
+            for (let i = 0; i < 5; i++) {
+                const cloudWrap = document.createElement('div');
+                cloudWrap.className = 'cloud-animate';
+                cloudWrap.style.top = (15 + i * 20) + '%';
+                cloudWrap.style.left = '-500px';
+                cloudWrap.style.animation = `floatOver ${40 + i * 12}s linear infinite`;
+                cloudWrap.style.animationDelay = `-${i * 15}s`;
+                cloudWrap.style.transform = `scale(${1 + Math.random() * 0.5})`;
+                
+                cloudWrap.innerHTML = `
+                    <div class="relative">
+                        <div class="w-64 h-16 bg-white rounded-full shadow-lg"></div>
+                        <div class="w-32 h-32 bg-white rounded-full -mt-24 ml-10"></div>
+                        <div class="w-28 h-28 bg-white rounded-full -mt-28 ml-32"></div>
+                    </div>
+                `;
+                cloudsContainer.appendChild(cloudWrap);
+            }
+
+            // Sun rays
+            const sunRays = document.getElementById('sun-rays');
+            for (let i = 0; i < 12; i++) {
+                const ray = document.createElement('div');
+                ray.className = 'absolute top-1/2 left-1/2 w-1.5 h-48 bg-gradient-to-t from-transparent via-yellow-200/40 to-transparent -translate-x-1/2 -translate-y-1/2';
+                ray.style.transform = `translate(-50%, -50%) rotate(${i * 30}deg)`;
+                sunRays.appendChild(ray);
+            }
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('student-grid');
+            grid.innerHTML = '';
+            for (let i = 0; i < 50; i++) {
+                const student = students[i];
+                const btn = document.createElement('button');
+                btn.onclick = () => handleOpenSlot(i);
+                btn.className = `
+                    aspect-square rounded-[3rem] transition-all duration-500 transform hover:scale-105 active:scale-95 shadow-2xl flex flex-col items-center justify-center p-3 relative overflow-hidden group
+                    ${student 
+                        ? 'bg-white border-4 border-sky-100' 
+                        : 'bg-white/20 hover:bg-white/40 border-4 border-dashed border-white/50 backdrop-blur-md'}
+                `;
+
+                if (student) {
+                    const shortName = student.name.split(' ').slice(-2).join(' ');
+                    btn.innerHTML = `
+                        <div class="flex flex-col items-center w-full h-full justify-between py-2">
+                            <div class="w-24 h-24 md:w-28 md:h-28 rounded-[2.5rem] overflow-hidden border-4 border-sky-50 shadow-2xl bg-sky-50 group-hover:rotate-3 transition-transform">
+                                ${student.avatarImage ? `<img src="${student.avatarImage}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-sky-200"><i data-lucide="user" class="w-12 h-12"></i></div>`}
+                            </div>
+                            <div class="w-full">
+                                <span class="text-base md:text-lg font-black block truncate px-2 text-blue-900">${shortName}</span>
+                                <span class="text-[10px] font-bold opacity-60 block text-sky-600">6A2 Long Trường</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    btn.innerHTML = `
+                        <div class="flex flex-col items-center group-hover:animate-pulse">
+                            <span class="text-white/60 font-black text-5xl tracking-tighter drop-shadow-md">#${i + 1}</span>
+                            <span class="text-xs font-black text-white/40 uppercase mt-2 tracking-[0.2em]">Chọn Slot</span>
+                        </div>
+                    `;
+                }
+                grid.appendChild(btn);
+            }
+            lucide.createIcons();
+        }
+
+        // --- MODAL LOGIC ---
+        function handleOpenSlot(index) {
+            selectedSlot = index;
+            const student = students[index];
+            const modal = document.getElementById('modal');
+            const editBtn = document.getElementById('edit-btn');
+            
+            document.getElementById('modal-subtitle').innerText = `Ô SỐ #${index + 1}`;
+            
+            if (student) {
+                viewMode = 'view';
+                editBtn.classList.remove('hidden');
+                renderViewContent(student);
+            } else {
+                viewMode = 'edit';
+                editBtn.classList.add('hidden');
+                renderEditContent();
+            }
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function renderViewContent(student) {
+            const header = document.getElementById('modal-header');
+            header.className = 'p-10 flex justify-between items-center text-white bg-gradient-to-r from-sky-600 to-blue-700';
+            document.getElementById('modal-title').innerText = 'Thông Tin Cá Nhân';
+            document.getElementById('modal-icon').innerHTML = '<i data-lucide="user" class="w-7 h-7"></i>';
+
+            const content = document.getElementById('modal-content');
+            content.innerHTML = `
+                <div class="flex flex-col items-center mb-6">
+                    <div class="w-52 h-52 rounded-[4rem] bg-white border-8 border-sky-50 flex items-center justify-center overflow-hidden shadow-2xl rotate-2">
+                        ${student.avatarImage ? `<img src="${student.avatarImage}" class="w-full h-full object-cover">` : `<i data-lucide="user" class="text-sky-100 w-24 h-24"></i>`}
+                    </div>
+                </div>
+                <div class="grid gap-8">
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3"><i data-lucide="user" class="w-4 h-4 text-blue-400"></i> Tên tớ là...</label>
+                        <div class="px-10 py-6 bg-white rounded-[2.5rem] font-black text-4xl text-blue-950 shadow-inner border-b-8 border-blue-50">${student.name}</div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3"><i data-lucide="calendar" class="w-4 h-4 text-emerald-400"></i> Sinh nhật</label>
+                            <div class="px-8 py-5 bg-white rounded-[2rem] font-black text-slate-700 shadow-inner border-l-[10px] border-emerald-400">${student.birthday || 'Bí mật...'}</div>
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3"><i data-lucide="rocket" class="w-4 h-4 text-orange-400"></i> Ước mơ</label>
+                            <div class="px-8 py-5 bg-orange-50 rounded-[2rem] font-black text-orange-700 shadow-inner">${student.dream || 'Bay thật xa'}</div>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3"><i data-lucide="heart" class="w-4 h-4 text-red-400"></i> Sở thích</label>
+                        <div class="px-10 py-8 bg-white rounded-[2.5rem] text-slate-600 font-bold leading-relaxed italic border-t-8 border-sky-50 shadow-inner text-lg">"${student.hobby || 'Một bí ẩn chưa có lời giải...'}"</div>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function renderEditContent(existingData = null) {
+            const header = document.getElementById('modal-header');
+            header.className = 'p-10 flex justify-between items-center text-white bg-gradient-to-r from-blue-600 to-sky-500';
+            document.getElementById('modal-title').innerText = 'Tạo Profile';
+            document.getElementById('modal-icon').innerHTML = '<i data-lucide="rocket" class="w-7 h-7"></i>';
+
+            const content = document.getElementById('modal-content');
+            content.innerHTML = `
+                <div class="flex flex-col items-center mb-6">
+                    <div onclick="document.getElementById('fileInput').click()" class="relative cursor-pointer group">
+                        <div id="avatar-preview" class="w-52 h-52 rounded-[4rem] bg-white border-8 border-dashed border-blue-200 group-hover:border-blue-500 flex items-center justify-center overflow-hidden shadow-2xl transition-all duration-500 rotate-2 group-hover:rotate-0">
+                            ${existingData?.avatarImage ? `<img src="${existingData.avatarImage}" class="w-full h-full object-cover">` : `<i data-lucide="user" class="text-sky-100 w-24 h-24"></i>`}
+                        </div>
+                        <div class="absolute -bottom-4 -right-4 bg-blue-600 text-white p-5 rounded-[1.8rem] shadow-2xl animate-bounce border-4 border-white">
+                            <i data-lucide="camera" class="w-7 h-7"></i>
+                        </div>
+                        <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="handleImage(this)">
+                    </div>
+                </div>
+                <div class="grid gap-8">
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3">Tên tớ là...</label>
+                        <input id="form-name" placeholder="Nhập họ và tên đầy đủ" class="w-full px-8 py-5 bg-white border-4 border-slate-100 focus:border-blue-400 rounded-[2rem] outline-none font-black text-blue-900 shadow-inner" value="${existingData?.name || ''}">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3">Sinh nhật</label>
+                            <input id="form-birthday" placeholder="Ngày/Tháng/Năm" class="w-full px-8 py-5 bg-white border-4 border-slate-100 focus:border-blue-400 rounded-[2rem] outline-none font-black text-blue-900" value="${existingData?.birthday || ''}">
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3">Ước mơ</label>
+                            <input id="form-dream" placeholder="Sau này muốn làm..." class="w-full px-8 py-5 bg-white border-4 border-slate-100 focus:border-blue-400 rounded-[2rem] outline-none font-black text-blue-900" value="${existingData?.dream || ''}">
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3">Sở thích</label>
+                        <textarea id="form-hobby" placeholder="Chia sẻ những điều bạn thích..." class="w-full px-8 py-5 bg-white border-4 border-slate-100 focus:border-blue-400 rounded-[2.5rem] outline-none h-32 resize-none font-black text-blue-900 shadow-inner">${existingData?.hobby || ''}</textarea>
+                    </div>
+                    <div class="space-y-4 bg-blue-50/80 p-8 rounded-[3rem] border-4 border-blue-100">
+                        <label class="text-xs font-black text-blue-600 uppercase tracking-widest flex items-center gap-2"><i data-lucide="lock" class="w-4 h-4"></i> Mật khẩu bảo vệ</label>
+                        <input id="form-password" type="password" placeholder="Mật khẩu để sửa sau này..." class="w-full px-8 py-5 bg-white border-4 border-blue-200 focus:border-blue-600 rounded-[1.5rem] outline-none font-black text-blue-950 shadow-inner" value="${existingData?.password || ''}">
+                    </div>
+                    <div class="pt-4">
+                        <button onclick="submitForm()" class="w-full bg-gradient-to-r from-blue-600 via-sky-600 to-indigo-700 text-white font-black py-7 rounded-[2.5rem] shadow-[0_15px_30px_rgba(37,99,235,0.4)] hover:-translate-y-1 active:translate-y-1 active:shadow-none transition-all uppercase tracking-[0.3em] text-xl">
+                            Gia Nhập Lớp 6A2
+                        </button>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function editCurrentProfile() {
+            viewMode = 'auth';
+            const header = document.getElementById('modal-header');
+            header.className = 'p-10 flex justify-between items-center text-white bg-amber-500';
+            document.getElementById('modal-title').innerText = 'Xác Minh';
+            document.getElementById('modal-icon').innerHTML = '<i data-lucide="lock" class="w-7 h-7"></i>';
+            document.getElementById('edit-btn').classList.add('hidden');
+
+            const content = document.getElementById('modal-content');
+            content.innerHTML = `
+                <div class="text-center py-12 space-y-8">
+                    <div class="w-28 h-28 bg-amber-100 text-amber-600 rounded-[2.5rem] flex items-center justify-center mx-auto shadow-inner">
+                        <i data-lucide="lock" class="w-14 h-14 animate-pulse"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-3xl font-black text-slate-800">Nhập mật khẩu</h4>
+                        <p class="text-slate-500 font-bold mt-2">Xác nhận mật khẩu để sửa hồ sơ.</p>
+                    </div>
+                    <input id="verify-pass" type="password" autoFocus placeholder="..." class="w-full px-8 py-6 bg-white border-4 border-slate-100 focus:border-amber-400 rounded-[2rem] outline-none text-center text-2xl font-black text-amber-600 shadow-xl transition-all">
+                    <div id="auth-error" class="text-red-500 text-sm font-black hidden">Mật khẩu không chính xác!</div>
+                    <button onclick="verifyPassword()" class="w-full bg-amber-500 text-white font-black py-6 rounded-[2rem] shadow-[0_10px_0_rgb(217,119,6)] active:translate-y-2 active:shadow-none transition-all uppercase tracking-widest text-xl">Xác Nhận</button>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function verifyPassword() {
+            const pass = document.getElementById('verify-pass').value;
+            const student = students[selectedSlot];
+            if (student && student.password === pass) {
+                viewMode = 'edit';
+                renderEditContent(student);
+            } else {
+                document.getElementById('auth-error').classList.remove('hidden');
+            }
+        }
+
+        // --- FORM HANDLERS ---
+        let currentImageBase64 = null;
+
+        function handleImage(input) {
+            const file = input.files[0];
+            if (file) {
+                if (file.size > 800 * 1024) {
+                    alert("Ảnh quá lớn! Vui lòng chọn ảnh dưới 800KB.");
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    currentImageBase64 = e.target.result;
+                    document.getElementById('avatar-preview').innerHTML = `<img src="${currentImageBase64}" class="w-full h-full object-cover">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function submitForm() {
+            const name = document.getElementById('form-name').value;
+            const password = document.getElementById('form-password').value;
+
+            if (!name || !password) {
+                alert("Vui lòng điền tên và mật khẩu!");
+                return;
+            }
+
+            const studentData = {
+                name: name,
+                birthday: document.getElementById('form-birthday').value,
+                dream: document.getElementById('form-dream').value,
+                hobby: document.getElementById('form-hobby').value,
+                password: password,
+                avatarImage: currentImageBase64 || (students[selectedSlot]?.avatarImage || null),
+                updatedAt: new Date().toISOString()
+            };
+
+            students[selectedSlot] = studentData;
+            saveToLocal();
+            closeModal();
+        }
+
+        // --- INIT ---
+        window.onload = () => {
+            initDecorations();
+            renderGrid();
+        };
+    </script>
+</body>
+</html>
