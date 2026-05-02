@@ -124,6 +124,9 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
+                    <button onclick="handleDeleteSlot()" id="delete-btn" class="hidden bg-white/20 hover:bg-red-500 p-4 rounded-full transition-all group">
+                        <i data-lucide="trash-2" class="w-6 h-6 group-hover:scale-110 transition-transform"></i>
+                    </button>
                     <button onclick="editCurrentProfile()" id="edit-btn" class="hidden bg-white/20 hover:bg-white/40 p-4 rounded-full transition-all group">
                         <i data-lucide="edit-3" class="w-6 h-6 group-hover:rotate-12 transition-transform"></i>
                     </button>
@@ -157,7 +160,7 @@
     </footer>
 
     <script>
-        // --- CẤU HÌNH SUPABASE (TRỰC TUYẾN) ---
+        // --- CẤU HÌNH SUPABASE ---
         const SB_URL = 'https://kwaxleppbbrjukcrofoz.supabase.co';
         const SB_KEY = 'sb_publishable_YAOpIhazDHiiEb7gyYI4pw_y91wzrTG'; 
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
@@ -180,7 +183,6 @@
             { name: 'Đại dương', class: 'bg-gradient-to-br from-cyan-200 to-blue-300 text-blue-950' }
         ];
 
-        // Tải dữ liệu từ Supabase thay vì LocalStorage
         async function loadStudents() {
             const { data, error } = await _supabase.from('students').select('*');
             if (error) {
@@ -194,7 +196,6 @@
             renderGrid();
         }
 
-        // --- UI RENDERERS ---
         function initDecorations() {
             const starsContainer = document.getElementById('stars-container');
             for (let i = 0; i < 40; i++) {
@@ -280,22 +281,35 @@
             lucide.createIcons();
         }
 
-        // --- MODAL LOGIC ---
+        // --- KIỂM TRA SLOT ĐÃ CHỌN TRÊN MÁY ---
+        function getMySlot() {
+            return localStorage.getItem('my_6a2_slot');
+        }
+
         function handleOpenSlot(index) {
             selectedSlot = index;
             const student = students[index];
             const modal = document.getElementById('modal');
             const editBtn = document.getElementById('edit-btn');
+            const deleteBtn = document.getElementById('delete-btn');
+            const mySlot = getMySlot();
             
             document.getElementById('modal-subtitle').innerText = `Ô SỐ #${index + 1}`;
             
             if (student) {
                 viewMode = 'view';
                 editBtn.classList.remove('hidden');
+                deleteBtn.classList.remove('hidden');
                 renderViewContent(student);
             } else {
+                // Nếu chưa có sinh viên ở slot này nhưng máy này đã chọn một slot khác rồi
+                if (mySlot !== null) {
+                    alert(`Bạn đã chọn ô số #${parseInt(mySlot) + 1} rồi. Mỗi người chỉ được chọn 1 ô! (Vui lòng xóa ô cũ nếu muốn chọn lại)`);
+                    return;
+                }
                 viewMode = 'edit';
                 editBtn.classList.add('hidden');
+                deleteBtn.classList.add('hidden');
                 currentTheme = 'bg-white text-blue-900';
                 renderEditContent();
             }
@@ -428,6 +442,7 @@
             document.getElementById('modal-title').innerText = 'Xác Minh';
             document.getElementById('modal-icon').innerHTML = '<i data-lucide="lock" class="w-7 h-7"></i>';
             document.getElementById('edit-btn').classList.add('hidden');
+            document.getElementById('delete-btn').classList.add('hidden');
 
             const content = document.getElementById('modal-content');
             content.innerHTML = `
@@ -445,6 +460,59 @@
                 </div>
             `;
             lucide.createIcons();
+        }
+
+        // --- TÍNH NĂNG XÓA ---
+        function handleDeleteSlot() {
+            const student = students[selectedSlot];
+            if (!student) return;
+
+            viewMode = 'delete-auth';
+            const header = document.getElementById('modal-header');
+            header.className = 'p-10 flex justify-between items-center text-white bg-rose-600';
+            document.getElementById('modal-title').innerText = 'Xác Nhận Xóa';
+            document.getElementById('modal-icon').innerHTML = '<i data-lucide="trash-2" class="w-7 h-7"></i>';
+            document.getElementById('edit-btn').classList.add('hidden');
+            document.getElementById('delete-btn').classList.add('hidden');
+
+            const content = document.getElementById('modal-content');
+            content.innerHTML = `
+                <div class="text-center py-12 space-y-8">
+                    <div class="w-28 h-28 bg-rose-100 text-rose-600 rounded-[2.5rem] flex items-center justify-center mx-auto shadow-inner">
+                        <i data-lucide="alert-triangle" class="w-14 h-14 animate-bounce"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-3xl font-black text-slate-800">Cảnh báo xóa!</h4>
+                        <p class="text-slate-500 font-bold mt-2">Nhập chính xác tên <span class="text-rose-600">"${student.name}"</span> để xóa.</p>
+                    </div>
+                    <input id="delete-confirm-name" placeholder="Nhập tên tại đây..." class="w-full px-8 py-6 bg-white border-4 border-slate-100 focus:border-rose-400 rounded-[2rem] outline-none text-center text-2xl font-black text-rose-600 shadow-xl transition-all">
+                    <div id="delete-error" class="text-red-500 text-sm font-black hidden">Tên nhập vào chưa khớp!</div>
+                    <button onclick="confirmDelete()" class="w-full bg-rose-600 text-white font-black py-6 rounded-[2rem] shadow-[0_10px_0_rgb(159,18,57)] active:translate-y-2 active:shadow-none transition-all uppercase tracking-widest text-xl">Xác Nhận Xóa Ô Này</button>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        async function confirmDelete() {
+            const inputName = document.getElementById('delete-confirm-name').value;
+            const student = students[selectedSlot];
+            
+            if (inputName.trim().toLowerCase() === student.name.trim().toLowerCase()) {
+                const { error } = await _supabase
+                    .from('students')
+                    .delete()
+                    .eq('slot_index', selectedSlot);
+                
+                if (error) {
+                    alert("Lỗi khi xóa: " + error.message);
+                } else {
+                    localStorage.removeItem('my_6a2_slot'); // Xóa dấu vết trên máy
+                    closeModal();
+                    loadStudents();
+                }
+            } else {
+                document.getElementById('delete-error').classList.remove('hidden');
+            }
         }
 
         function verifyPassword() {
@@ -495,7 +563,6 @@
                 updated_at: new Date().toISOString()
             };
 
-            // LƯU LÊN SUPABASE
             const { error } = await _supabase
                 .from('students')
                 .upsert(studentData, { onConflict: 'slot_index' });
@@ -503,13 +570,13 @@
             if (error) {
                 alert("Lỗi khi lưu: " + error.message);
             } else {
+                localStorage.setItem('my_6a2_slot', selectedSlot); // Lưu dấu vết máy này đã chọn slot này
                 closeModal();
                 currentImageBase64 = null;
-                loadStudents(); // Tải lại dữ liệu mới
+                loadStudents();
             }
         }
 
-        // --- INIT ---
         window.onload = () => {
             initDecorations();
             loadStudents();
