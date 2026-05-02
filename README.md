@@ -27,7 +27,7 @@ Web hiện tại chỉ sử dụng **LocalStorage** (dữ liệu lưu trên máy
 ---
 
 ### 📝 Giới thiệu
-Chúng mình là tập thể lớp **6A2**, gồm **50 thành viên** cực kỳ năng động và yêu công nghệ[cite: 1]. Đây là không gian số nơi lưu giữ những mảnh ghép cá tính của từng thành viên dưới mái trường THCS Long Trường[cite: 1].
+Chúng mình là tập thể lớp **6A2**, gồm **50 thành viên** cực kỳ năng động và yêu công nghệ. Đây là không gian số nơi lưu giữ những mảnh ghép cá tính của từng thành viên dưới mái trường THCS Long Trường.
 
 ### 🛠 Công nghệ sử dụng:
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
@@ -47,21 +47,21 @@ Chúng mình là tập thể lớp **6A2**, gồm **50 thành viên** cực kỳ
 </p>
 
 ## 📝 𝐆𝐢𝐨̛́𝐢 𝐭𝐡𝐢𝐞̣̂𝐮 𝐝𝐮̛̣ 𝐚́𝐧
-Đây là dự án Web Profile dành riêng cho tập thể lớp **6A2 - Trường THCS Long Trường**[cite: 1]. Trang web tạo ra một không gian tương tác hiện đại, nơi mỗi học sinh có thể "đặt chỗ" (claim slot) và tự thiết kế trang cá nhân của mình[cite: 1].
+Đây là dự án Web Profile dành riêng cho tập thể lớp **6A2 - Trường THCS Long Trường**. Trang web tạo ra một không gian tương tác hiện đại, nơi mỗi học sinh có thể "đặt chỗ" (claim slot) và tự thiết kế trang cá nhân của mình.
 
 > [!TIP]
-> **Điểm đặc biệt:** Giao diện web thay đổi theo thời gian thực với bầu trời đầy sao, mây trôi và mặt trời lấp lánh, tượng trưng cho những ước mơ bay cao của các thành viên 6A2[cite: 1].
+> **Điểm đặc biệt:** Giao diện web thay đổi theo thời gian thực với bầu trời đầy sao, mây trôi và mặt trời lấp lánh, tượng trưng cho những ước mơ bay cao của các thành viên 6A2.
 
 ## 💎 𝐂𝐚́𝐜 𝐭𝐢́𝐧𝐡 𝐧𝐚̆𝐧𝐠 𝐜𝐨̂́𝐭 𝐥𝐨̃𝐢
-Trang web sở hữu hệ thống tính năng thông minh giúp kết nối các bạn trong lớp[cite: 1]:
-*   🔳 **Grid System:** Hệ thống 50 ô Slot đại diện cho sĩ số lớp, cho phép chọn vị trí yêu thích[cite: 1].
-*   🎭 **Personal Profile:** Mỗi bạn có một thẻ thông tin riêng gồm: *Ảnh đại diện, Sinh nhật, Ước mơ và Sở thích*[cite: 1].
-*   🛡️ **Security Lock:** Tính năng mật khẩu bảo vệ giúp các bạn tự quản lý và chỉnh sửa hồ sơ cá nhân[cite: 1].
-*   ☁️ **Dynamic UI:** Hiệu ứng hoạt họa mây trôi và sao lấp lánh tạo cảm giác sống động[cite: 1].
+Trang web sở hữu hệ thống tính năng thông minh giúp kết nối các bạn trong lớp:
+*   🔳 **Grid System:** Hệ thống 50 ô Slot đại diện cho sĩ số lớp, cho phép chọn vị trí yêu thích.
+*   🎭 **Personal Profile:** Mỗi bạn có một thẻ thông tin riêng gồm: *Ảnh đại diện, Sinh nhật, Ước mơ và Sở thích*.
+*   🛡️ **Security Lock:** Tính năng mật khẩu bảo vệ giúp các bạn tự quản lý và chỉnh sửa hồ sơ cá nhân.
+*   ☁️ **Dynamic UI:** Hiệu ứng hoạt họa mây trôi và sao lấp lánh tạo cảm giác sống động.
 
 ## 👩‍🏫 𝐁𝐚𝐧 𝐜𝐨̂́ 𝐯𝐚̂́𝐧 𝐯𝐚̀ Đ𝐨̣̂𝐢 𝐧𝐠𝐮̃
-*   **Giáo viên chủ nhiệm:** Cô Nguyễn Thị Hồng Nhung[cite: 1].
-*   **Đội ngũ phát triển:** Tập thể học sinh lớp 6A2[cite: 1].
+*   **Giáo viên chủ nhiệm:** Cô Nguyễn Thị Hồng Nhung.
+*   **Đội ngũ phát triển:** Tập thể học sinh lớp 6A2.
 ```text
   ╔═══════════════════════════════════════════════╗
   ║                SƠ ĐỒ LỚP 6A2                  ║
