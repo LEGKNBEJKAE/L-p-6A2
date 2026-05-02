@@ -3,7 +3,7 @@
 <p align="center">
 <img src="https://komarev.com/ghpvc/?username=lop-6A2&color=blue&style=flat-square" alt="Lượt xem" />
 </p>
-### 🚩 Khẩu hiệu: "Học hết mình, chơi nhiệt tình!"
+🚩 Khẩu hiệu: "Học hết mình, chơi nhiệt tình!
 
 ---
 
