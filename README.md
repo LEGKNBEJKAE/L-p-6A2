@@ -1,9 +1,20 @@
-# L-p-6A2 
-This website helps the members of class 6A2 remember each other forever 😊🎉
----------------------------------------------------------------------------------------------------------------------------------
+# 🌟 CHÀO MỪNG ĐẾN VỚI NGÔI NHÀ 6A2 🌟
 
-<img width="1881" height="744" alt="image" src="https://github.com/user-attachments/assets/54cab3de-019b-4840-af9b-96fbb640a8ca" />
+<p align="center">
+  <img src="https://komarev.com/ghpvc/?username=lop-6A2&color=blue&style=flat-square" alt="Lượt xem" />
+</p>
 
+### 🚩 Khẩu hiệu: "Học hết mình, chơi nhiệt tình!"
 
-Update 1.2 🥸🤷‍♂️
-- Added the ability to change the nameplate frame color 🎉✨🥳
+---
+
+### 📝 Giới thiệu
+Chúng mình là tập thể lớp 6A2, gồm **40 thành viên** cực kỳ năng động và yêu công nghệ. 
+
+### 🛠 Công nghệ chúng mình sử dụng để làm web:
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+
+### 📫 Liên hệ:
+- 📧 Email: lop6A2@school.edu.vn
+- 📍 Địa chỉ: Phòng học 102, Tầng 1.
