@@ -17,65 +17,52 @@ Chúng mình là tập thể lớp 6A2, gồm **50 thành viên** cực kỳ nă
 ### 📫 Liên hệ:
 - 📧 Email: trinhtrungkien04042014@gmail.com
 ---
+# 🛸 𝟔𝐀𝟐 - 𝐓𝐇𝐄 𝐃𝐈𝐆𝐈𝐓𝐀𝐋 𝐔𝐍𝐈𝐕𝐄𝐑𝐒𝐄 🪐
+### 🌟 "Ngôi nhà chung rực rỡ sắc màu - Niên khóa 2025-2026" 🌟
 
 <p align="center">
-  <i>Made with ❤️ by 6A2 Coders</i><br>
-  <b>"Đoàn kết là sức mạnh - 6A2 là số 1!"</b>
-</p>
-
----
-
-# 🛸 𝟔𝐀𝟐 - 𝐓𝐇𝐄 𝐒𝐋𝐎𝐓 𝐔𝐍𝐈𝐕𝐄𝐑𝐒𝐄 🪐
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Status-Online-brightgreen?style=for-the-badge&logo=github" />
-  <img src="https://img.shields.io/badge/Class-6A2-blue?style=for-the-badge&logo=school" />
-  <img src="https://img.shields.io/badge/Year-2025--2026-orange?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/School-THCS_Long_Trường-blue?style=for-the-badge&logo=google-classroom&logoColor=white" />
+  <img src="https://img.shields.io/badge/Class-6A2-0c4a6e?style=for-the-badge&logo=sparkles" />
+  <img src="https://img.shields.io/badge/Framework-Tailwind_CSS-38bdf8?style=for-the-badge&logo=tailwind-css" />
 </p>
 
 ---
 
 ## 📝 𝐆𝐢𝐨̛́𝐢 𝐭𝐡𝐢𝐞̣̂𝐮 𝐝𝐮̛̣ 𝐚́𝐧
-Chào mừng bạn đến với không gian số của **Lớp 6A2**! Đây không chỉ là một trang web, mà là một **"Ma trận Slot"** nơi mỗi thành viên là một mảnh ghép độc nhất.
+Đây là dự án Web Profile dành riêng cho tập thể lớp **6A2 - Trường THCS Long Trường**[cite: 1]. Trang web tạo ra một không gian tương tác hiện đại, nơi mỗi học sinh có thể "đặt chỗ" (claim slot) và tự thiết kế trang cá nhân của mình[cite: 1].
 
-> [!TIP]
-> **Cách thức hoạt động:** Mỗi bạn sẽ chọn một ô "Slot" trống trên giao diện web, nhấn vào và để lại dấu ấn cá nhân (ảnh, sở thích, châm ngôn sống).
-
----
-
-## 💎 𝐂𝐚́𝐜 𝐭𝐢́𝐧𝐡 𝐧𝐚̆𝐧𝐠 𝐧𝐨̂̉𝐢 𝐛𝐚̣̂𝐭
-*   🔳 **Slot-Selection:** Giao diện dạng lưới (Grid) cực hiện đại.
-*   🎭 **Identity Card:** Hiệu ứng lật thẻ để xem thông tin chi tiết từng bạn.
-*   ⚡ **Real-time:** Cập nhật ngay lập tức khi có người mới "đặt chỗ".
-*   🌈 **Color Custom:** Mỗi tổ sẽ có một màu sắc rực rỡ riêng biệt.
+> [!IMPORTANT]
+> **Điểm đặc biệt:** Giao diện web thay đổi theo thời gian thực với bầu trời đầy sao, mây trôi và mặt trời lấp lánh, tượng trưng cho những ước mơ bay cao của các thành viên 6A2[cite: 1].
 
 ---
 
-## 🛠 𝐂𝐨̂𝐧𝐠 𝐧𝐠𝐡𝐞̣̂ 𝐬𝐮̛̉ 𝐝𝐮̛̣𝐧𝐠
-Các "vũ khí" tối tân giúp xây dựng nên trạm không gian này:
-*   `[ 💻 HTML5 ]` - Khung xương của hệ thống.
-*   `[ 🎨 CSS3 ]` - Bộ giáp lung linh với hiệu ứng Grid & Flexbox.
-*   `[ ⚡ JavaScript ]` - Bộ não điều khiển các ô Slot.
-*   `[ 🔥 Firebase ]` - Cỗ máy lưu trữ thông tin thần tốc.
+## 💎 𝐂𝐚́𝐜 𝐭𝐢́𝐧𝐡 𝐧𝐚̆𝐧𝐠 𝐜𝐨̂́𝐭 𝐥𝐨̃𝐢
+Trang web không chỉ để ngắm mà còn sở hữu hệ thống tính năng thông minh[cite: 1]:
+
+*   🔳 **Grid System:** Hệ thống 50 ô Slot đại diện cho sĩ số lớp, cho phép chọn vị trí yêu thích[cite: 1].
+*   🎭 **Personal Profile:** Mỗi bạn có một thẻ thông tin riêng gồm: *Ảnh đại diện, Sinh nhật, Ước mơ và Sở thích*[cite: 1].
+*   🛡️ **Security Lock:** Tính năng mật khẩu bảo vệ giúp các bạn tự quản lý và chỉnh sửa hồ sơ cá nhân mà không sợ bị người khác can thiệp[cite: 1].
+*   ☁️ **Dynamic UI:** Hiệu ứng hoạt họa mây trôi (floatOver) và sao lấp lánh (twinkle) tạo cảm giác sống động[cite: 1].
 
 ---
 
-## 🏫 Đ𝐨̣̂𝐢 𝐧𝐠𝐮̃ 𝐩𝐡𝐚́𝐭 𝐭𝐫𝐢𝐞̂̉𝐧 (𝐁𝐂𝐒𝐋)
-| 🛡️ Vị trí | 👤 Thành viên | 🔮 Năng lực |
-| :--- | :--- | :--- |
-| **Project Manager** | [Tên bạn] | Quản lý hệ thống |
-| **UI/UX Designer** | [Tên bạn lớp] | Phù thủy màu sắc |
-| **Content Creator** | [Tên bạn lớp] | Người truyền lửa |
+## 🛠 𝐓𝐞𝐜𝐡 𝐒𝐭𝐚𝐜𝐤 (𝐕𝐮̃ 𝐤𝐡𝐢́ 𝐜𝐨̂𝐧𝐠 𝐧𝐠𝐡𝐞̣̂)
+Dự án được tối ưu hóa với các công nghệ web hiện đại nhất[cite: 1]:
+*   **Frontend:** `HTML5` & `Tailwind CSS` (Framework CSS mạnh mẽ nhất hiện nay)[cite: 1].
+*   **Icon System:** `Lucide Icons` mang lại bộ icon tối giản, tinh tế[cite: 1].
+*   **Typography:** Google Fonts - `Plus Jakarta Sans` (Font chữ hiện đại, dễ đọc)[cite: 1].
+*   **Database:** `LocalStorage` (Tự động lưu trữ dữ liệu trên trình duyệt)[cite: 1].
 
 ---
 
-## 🗺️ 𝐒𝐨̛ đ𝐨̂̀ "𝐌𝐚 𝐭𝐫𝐚̣̂𝐧 𝐒𝐥𝐨𝐭" (𝐃𝐞𝐦𝐨)
+## 👩‍🏫 𝐁𝐚𝐧 𝐜𝐨̂́𝐯𝐚̂́𝐧 𝐯𝐚̀ Đ𝐨̣̂𝐢 𝐧𝐠𝐮̃
+*   **Giáo viên chủ nhiệm:** Cô Nguyễn Thị Hồng Nhung[cite: 1].
+*   **Đội ngũ phát triển:** Tập thể học sinh lớp 6A2[cite: 1].
 ```text
-╔═══════════╗   ╔═══════════╗   ╔═══════════╗
-║   Slot 1  ║   ║   Slot 2  ║   ║   Slot 3  ║
-║  [User A] ║   ║  [Empty]  ║   ║  [User C] ║
-╚═══════════╝   ╚═══════════╝   ╚═══════════╝
-      ▲               ▲               ▲
-      ╚═══════════════╬═══════════════╝
-                [ 𝐋𝐨̛́𝐩 𝟔𝐀𝟐 ]
-
+  ╔═══════════════════════════════════════════════╗
+  ║                SƠ ĐỒ LỚP 6A2                  ║
+  ╠═══════════════════════════════════════════════╣
+  ║ [ Slot 01 ] [ Slot 02 ] [ Slot 03 ] [ Slot 04 ] ║
+  ║ [ Slot 05 ] [ Slot 06 ] [ Slot 07 ] [ Slot 08 ] ║
+  ║ ...                                           ║
+  ╚═══════════════════════════════════════════════╝
