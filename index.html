@@ -21,6 +21,10 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #bae6fd; border-radius: 20px; border: 2px solid white; }
         .cloud-animate { position: absolute; opacity: 0.5; filter: blur(1px); pointer-events: none; }
+        
+        /* Màu sắc bảng phối */
+        .theme-option { cursor: pointer; transition: all 0.3s; border: 4px solid transparent; }
+        .theme-option.selected { border-color: #3b82f6; transform: scale(1.1); }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-b from-[#e0f2fe] via-[#38bdf8] to-[#0c4a6e] relative selection:bg-blue-200 text-slate-800">
@@ -154,7 +158,19 @@
         // --- DATA MANAGEMENT ---
         let students = JSON.parse(localStorage.getItem('6A2_students') || '{}');
         let selectedSlot = null;
-        let viewMode = 'view'; // 'view', 'edit', 'auth'
+        let viewMode = 'view';
+        let currentTheme = 'bg-white'; // Mặc định
+
+        const colorThemes = [
+            { name: 'Trắng tinh khôi', class: 'bg-white text-blue-900' },
+            { name: 'Xanh bình yên', class: 'bg-gradient-to-br from-blue-50 to-sky-100 text-blue-900' },
+            { name: 'Hồng mộng mơ', class: 'bg-gradient-to-br from-rose-50 to-pink-100 text-rose-900' },
+            { name: 'Vàng nắng hạ', class: 'bg-gradient-to-br from-amber-50 to-yellow-100 text-amber-900' },
+            { name: 'Tím huyền bí', class: 'bg-gradient-to-br from-purple-50 to-indigo-100 text-purple-900' },
+            { name: 'Lục bảo', class: 'bg-gradient-to-br from-emerald-50 to-teal-100 text-emerald-900' },
+            { name: 'Hoàng hôn', class: 'bg-gradient-to-br from-orange-100 to-rose-200 text-orange-950' },
+            { name: 'Đại dương', class: 'bg-gradient-to-br from-cyan-200 to-blue-300 text-blue-950' }
+        ];
 
         function saveToLocal() {
             localStorage.setItem('6A2_students', JSON.stringify(students));
@@ -163,7 +179,6 @@
 
         // --- UI RENDERERS ---
         function initDecorations() {
-            // Stars
             const starsContainer = document.getElementById('stars-container');
             for (let i = 0; i < 40; i++) {
                 const star = document.createElement('div');
@@ -176,7 +191,6 @@
                 starsContainer.appendChild(star);
             }
 
-            // Clouds
             const cloudsContainer = document.getElementById('clouds-container');
             for (let i = 0; i < 5; i++) {
                 const cloudWrap = document.createElement('div');
@@ -197,7 +211,6 @@
                 cloudsContainer.appendChild(cloudWrap);
             }
 
-            // Sun rays
             const sunRays = document.getElementById('sun-rays');
             for (let i = 0; i < 12; i++) {
                 const ray = document.createElement('div');
@@ -214,10 +227,14 @@
                 const student = students[i];
                 const btn = document.createElement('button');
                 btn.onclick = () => handleOpenSlot(i);
+                
+                // Lấy theme màu
+                const themeClass = student?.colorTheme || 'bg-white text-blue-900';
+
                 btn.className = `
                     aspect-square rounded-[3rem] transition-all duration-500 transform hover:scale-105 active:scale-95 shadow-2xl flex flex-col items-center justify-center p-3 relative overflow-hidden group
                     ${student 
-                        ? 'bg-white border-4 border-sky-100' 
+                        ? `${themeClass} border-4 border-white/50` 
                         : 'bg-white/20 hover:bg-white/40 border-4 border-dashed border-white/50 backdrop-blur-md'}
                 `;
 
@@ -225,12 +242,12 @@
                     const shortName = student.name.split(' ').slice(-2).join(' ');
                     btn.innerHTML = `
                         <div class="flex flex-col items-center w-full h-full justify-between py-2">
-                            <div class="w-24 h-24 md:w-28 md:h-28 rounded-[2.5rem] overflow-hidden border-4 border-sky-50 shadow-2xl bg-sky-50 group-hover:rotate-3 transition-transform">
+                            <div class="w-24 h-24 md:w-28 md:h-28 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl bg-sky-50 group-hover:rotate-3 transition-transform">
                                 ${student.avatarImage ? `<img src="${student.avatarImage}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-sky-200"><i data-lucide="user" class="w-12 h-12"></i></div>`}
                             </div>
                             <div class="w-full">
-                                <span class="text-base md:text-lg font-black block truncate px-2 text-blue-900">${shortName}</span>
-                                <span class="text-[10px] font-bold opacity-60 block text-sky-600">6A2 Long Trường</span>
+                                <span class="text-base md:text-lg font-black block truncate px-2">${shortName}</span>
+                                <span class="text-[10px] font-bold opacity-60 block uppercase tracking-tighter">6A2 Long Trường</span>
                             </div>
                         </div>
                     `;
@@ -263,6 +280,7 @@
             } else {
                 viewMode = 'edit';
                 editBtn.classList.add('hidden');
+                currentTheme = 'bg-white text-blue-900'; // Reset theme mặc định cho slot mới
                 renderEditContent();
             }
             
@@ -315,6 +333,8 @@
         }
 
         function renderEditContent(existingData = null) {
+            if (existingData) currentTheme = existingData.colorTheme || 'bg-white text-blue-900';
+
             const header = document.getElementById('modal-header');
             header.className = 'p-10 flex justify-between items-center text-white bg-gradient-to-r from-blue-600 to-sky-500';
             document.getElementById('modal-title').innerText = 'Tạo Profile';
@@ -333,7 +353,21 @@
                         <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="handleImage(this)">
                     </div>
                 </div>
+                
                 <div class="grid gap-8">
+                    <!-- Color Picker Section -->
+                    <div class="space-y-4">
+                        <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3">Bảng phối màu khung tên</label>
+                        <div class="grid grid-cols-4 sm:grid-cols-8 gap-3" id="theme-selector">
+                            ${colorThemes.map(t => `
+                                <div onclick="selectTheme('${t.class}', this)" 
+                                     class="theme-option w-full aspect-square rounded-2xl ${t.class} shadow-md ${currentTheme === t.class ? 'selected' : ''}"
+                                     title="${t.name}">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
                     <div class="space-y-3">
                         <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3">Tên tớ là...</label>
                         <input id="form-name" placeholder="Nhập họ và tên đầy đủ" class="w-full px-8 py-5 bg-white border-4 border-slate-100 focus:border-blue-400 rounded-[2rem] outline-none font-black text-blue-900 shadow-inner" value="${existingData?.name || ''}">
@@ -364,6 +398,12 @@
                 </div>
             `;
             lucide.createIcons();
+        }
+
+        function selectTheme(themeClass, el) {
+            currentTheme = themeClass;
+            document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
         }
 
         function editCurrentProfile() {
@@ -437,6 +477,7 @@
                 dream: document.getElementById('form-dream').value,
                 hobby: document.getElementById('form-hobby').value,
                 password: password,
+                colorTheme: currentTheme, // Lưu màu sắc đã chọn
                 avatarImage: currentImageBase64 || (students[selectedSlot]?.avatarImage || null),
                 updatedAt: new Date().toISOString()
             };
@@ -444,6 +485,7 @@
             students[selectedSlot] = studentData;
             saveToLocal();
             closeModal();
+            currentImageBase64 = null;
         }
 
         // --- INIT ---
