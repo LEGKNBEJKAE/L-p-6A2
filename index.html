@@ -6,10 +6,14 @@
     <title>Lớp 6A2 - THCS Long Trường</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- THƯ VIỆN SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
         @keyframes floatOver { 0% { transform: translateX(-500px); } 100% { transform: translateX(calc(100vw + 500px)); } }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 0.8; transform: scale(1.2); } }
         @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -19,6 +23,7 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #bae6fd; border-radius: 20px; border: 2px solid white; }
         .cloud-animate { position: absolute; opacity: 0.5; filter: blur(1px); pointer-events: none; }
+        
         .theme-option { cursor: pointer; transition: all 0.3s; border: 4px solid transparent; }
         .theme-option.selected { border-color: #3b82f6; transform: scale(1.1); }
     </style>
@@ -92,26 +97,38 @@
             </div>
         </div>
 
-        <div id="student-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8 relative pb-32"></div>
+        <div id="student-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8 relative pb-32">
+        </div>
     </div>
 
     <div id="modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 md:p-8 bg-sky-950/80 backdrop-blur-xl transition-all">
         <div class="bg-white rounded-[4rem] w-full max-w-2xl overflow-hidden shadow-[0_32px_64px_rgba(0,0,0,0.5)] border-[12px] border-white/20 relative">
+            
             <div id="modal-header" class="p-10 flex justify-between items-center text-white bg-gradient-to-r from-sky-600 to-blue-700">
                 <div class="flex items-center gap-5">
-                    <div class="bg-white/20 p-4 rounded-[1.5rem] shadow-inner" id="modal-icon"><i data-lucide="user" class="w-7 h-7"></i></div>
+                    <div class="bg-white/20 p-4 rounded-[1.5rem] shadow-inner" id="modal-icon">
+                        <i data-lucide="user" class="w-7 h-7"></i>
+                    </div>
                     <div>
                         <h3 id="modal-title" class="text-3xl font-black tracking-tight uppercase leading-none">Thông Tin</h3>
                         <p id="modal-subtitle" class="text-sm text-white/70 mt-2 font-black tracking-[0.3em] uppercase"></p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button onclick="confirmDelete()" id="delete-btn" class="hidden bg-red-500/20 hover:bg-red-500 p-4 rounded-full transition-all"><i data-lucide="trash-2" class="w-6 h-6 text-white"></i></button>
-                    <button onclick="editCurrentProfile()" id="edit-btn" class="hidden bg-white/20 hover:bg-white/40 p-4 rounded-full transition-all"><i data-lucide="edit-3" class="w-6 h-6"></i></button>
-                    <button onclick="closeModal()" class="bg-white/20 hover:bg-red-500 p-4 rounded-full transition-all"><i data-lucide="x" class="w-6 h-6"></i></button>
+                    <button onclick="confirmDelete()" id="delete-btn" class="hidden bg-red-500/20 hover:bg-red-500 p-4 rounded-full transition-all group">
+                        <i data-lucide="trash-2" class="w-6 h-6 text-white transition-transform"></i>
+                    </button>
+                    <button onclick="editCurrentProfile()" id="edit-btn" class="hidden bg-white/20 hover:bg-white/40 p-4 rounded-full transition-all group">
+                        <i data-lucide="edit-3" class="w-6 h-6 group-hover:rotate-12 transition-transform"></i>
+                    </button>
+                    <button onclick="closeModal()" class="bg-white/20 hover:bg-red-500 p-4 rounded-full transition-all">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
                 </div>
             </div>
-            <div id="modal-content" class="p-10 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar bg-slate-50/50"></div>
+            
+            <div id="modal-content" class="p-10 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar bg-slate-50/50">
+            </div>
         </div>
     </div>
 
@@ -132,18 +149,18 @@
     </footer>
 
     <script>
-        // --- SUPABASE CONFIGURATION (ĐÃ SỬA LỖI TRÙNG TÊN BIẾN) ---
+        // --- SUPABASE CONFIGURATION ---
         const _supabaseUrl = 'https://cwesurvjawhkqeirgdgf.supabase.co'; 
         const _supabaseKey = 'sb_publishable_igNeOf3XW_vHXF9G4IYcqQ_vlKgzq0d'; 
-        // Đổi tên biến thành 'db' để tránh xung đột với đối tượng 'supabase' toàn cục
-        const db = supabase.createClient(_supabaseUrl, _supabaseKey);
+        // Khởi tạo client supabase đúng cách (tránh trùng tên biến với thư viện)
+        const supabaseClient = supabase.createClient(_supabaseUrl, _supabaseKey);
 
+        // --- DATA MANAGEMENT ---
         let students = {}; 
         let mySlotIndex = localStorage.getItem('6A2_my_slot'); 
         let selectedSlot = null;
         let viewMode = 'view';
         let currentTheme = 'bg-white'; 
-        let currentImageBase64 = null;
 
         const colorThemes = [
             { name: 'Trắng tinh khôi', class: 'bg-white text-blue-900' },
@@ -156,16 +173,21 @@
             { name: 'Đại đương', class: 'bg-gradient-to-br from-cyan-200 to-blue-300 text-blue-950' }
         ];
 
+        // TẢI DỮ LIỆU TỪ SERVER
         async function fetchStudents() {
-            const { data, error } = await db.from('students').select('*');
-            if (error) console.error('Lỗi tải dữ liệu:', error);
-            else {
+            try {
+                const { data, error } = await supabaseClient.from('students').select('*');
+                if (error) throw error;
+                
                 students = {};
                 data.forEach(s => { students[s.id] = s; });
                 renderGrid();
+            } catch (err) {
+                console.error('Lỗi tải dữ liệu:', err.message);
             }
         }
 
+        // --- UI RENDERERS ---
         function initDecorations() {
             const starsContainer = document.getElementById('stars-container');
             for (let i = 0; i < 40; i++) {
@@ -187,7 +209,15 @@
                 cloudWrap.style.left = '-500px';
                 cloudWrap.style.animation = `floatOver ${40 + i * 12}s linear infinite`;
                 cloudWrap.style.animationDelay = `-${i * 15}s`;
-                cloudWrap.innerHTML = `<div class="relative"><div class="w-64 h-16 bg-white rounded-full shadow-lg"></div><div class="w-32 h-32 bg-white rounded-full -mt-24 ml-10"></div><div class="w-28 h-28 bg-white rounded-full -mt-28 ml-32"></div></div>`;
+                cloudWrap.style.transform = `scale(${1 + Math.random() * 0.5})`;
+                
+                cloudWrap.innerHTML = `
+                    <div class="relative">
+                        <div class="w-64 h-16 bg-white rounded-full shadow-lg"></div>
+                        <div class="w-32 h-32 bg-white rounded-full -mt-24 ml-10"></div>
+                        <div class="w-28 h-28 bg-white rounded-full -mt-28 ml-32"></div>
+                    </div>
+                `;
                 cloudsContainer.appendChild(cloudWrap);
             }
 
@@ -207,13 +237,36 @@
                 const student = students[i];
                 const btn = document.createElement('button');
                 btn.onclick = () => handleOpenSlot(i);
+                
                 const themeClass = student?.color_theme || 'bg-white text-blue-900';
-                btn.className = `aspect-square rounded-[3rem] transition-all duration-500 transform hover:scale-105 active:scale-95 shadow-2xl flex flex-col items-center justify-center p-3 relative overflow-hidden group ${student ? `${themeClass} border-4 border-white/50` : 'bg-white/20 hover:bg-white/40 border-4 border-dashed border-white/50 backdrop-blur-md'}`;
+
+                btn.className = `
+                    aspect-square rounded-[3rem] transition-all duration-500 transform hover:scale-105 active:scale-95 shadow-2xl flex flex-col items-center justify-center p-3 relative overflow-hidden group
+                    ${student 
+                        ? `${themeClass} border-4 border-white/50` 
+                        : 'bg-white/20 hover:bg-white/40 border-4 border-dashed border-white/50 backdrop-blur-md'}
+                `;
+
                 if (student) {
                     const shortName = student.name.split(' ').slice(-2).join(' ');
-                    btn.innerHTML = `<div class="flex flex-col items-center w-full h-full justify-between py-2"><div class="w-24 h-24 md:w-28 md:h-28 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl bg-sky-50 group-hover:rotate-3 transition-transform">${student.avatar_image ? `<img src="${student.avatar_image}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-sky-200"><i data-lucide="user" class="w-12 h-12"></i></div>`}</div><div class="w-full"><span class="text-base md:text-lg font-black block truncate px-2">${shortName}</span><span class="text-[10px] font-bold opacity-60 block uppercase tracking-tighter">6A2 Long Trường</span></div></div>`;
+                    btn.innerHTML = `
+                        <div class="flex flex-col items-center w-full h-full justify-between py-2">
+                            <div class="w-24 h-24 md:w-28 md:h-28 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl bg-sky-50 group-hover:rotate-3 transition-transform">
+                                ${student.avatar_image ? `<img src="${student.avatar_image}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-sky-200"><i data-lucide="user" class="w-12 h-12"></i></div>`}
+                            </div>
+                            <div class="w-full">
+                                <span class="text-base md:text-lg font-black block truncate px-2">${shortName}</span>
+                                <span class="text-[10px] font-bold opacity-60 block uppercase tracking-tighter">6A2 Long Trường</span>
+                            </div>
+                        </div>
+                    `;
                 } else {
-                    btn.innerHTML = `<div class="flex flex-col items-center group-hover:animate-pulse"><span class="text-white/60 font-black text-5xl tracking-tighter drop-shadow-md">#${i + 1}</span><span class="text-xs font-black text-white/40 uppercase mt-2 tracking-[0.2em]">Chọn Slot</span></div>`;
+                    btn.innerHTML = `
+                        <div class="flex flex-col items-center group-hover:animate-pulse">
+                            <span class="text-white/60 font-black text-5xl tracking-tighter drop-shadow-md">#${i + 1}</span>
+                            <span class="text-xs font-black text-white/40 uppercase mt-2 tracking-[0.2em]">Chọn Slot</span>
+                        </div>
+                    `;
                 }
                 grid.appendChild(btn);
             }
@@ -224,22 +277,29 @@
             selectedSlot = index;
             const student = students[index];
             const modal = document.getElementById('modal');
+            const editBtn = document.getElementById('edit-btn');
+            const deleteBtn = document.getElementById('delete-btn');
+            
             document.getElementById('modal-subtitle').innerText = `Ô SỐ #${index + 1}`;
-            document.getElementById('delete-btn').classList.add('hidden');
+            deleteBtn.classList.add('hidden');
+
             if (student) {
                 viewMode = 'view';
-                document.getElementById('edit-btn').classList.remove('hidden');
+                editBtn.classList.remove('hidden');
                 renderViewContent(student);
             } else {
+                // Kiểm tra xem người dùng này đã có slot chưa dựa trên localStorage
                 if (mySlotIndex !== null && students[mySlotIndex]) {
-                    alert(`Bạn đã có profile tại ô số #${parseInt(mySlotIndex) + 1}. Không thể tạo thêm!`);
+                    // Nếu đã có slot rồi, chỉ cho phép xem hoặc sửa chính slot đó
+                    alert(`Bạn đã có profile tại ô số #${parseInt(mySlotIndex) + 1}. Không thể tạo thêm ô mới!`);
                     return;
                 }
                 viewMode = 'edit';
-                document.getElementById('edit-btn').classList.add('hidden');
+                editBtn.classList.add('hidden');
                 currentTheme = 'bg-white text-blue-900'; 
                 renderEditContent();
             }
+            
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             lucide.createIcons();
@@ -252,15 +312,39 @@
         }
 
         function renderViewContent(student) {
-            document.getElementById('modal-header').className = 'p-10 flex justify-between items-center text-white bg-gradient-to-r from-sky-600 to-blue-700';
+            const header = document.getElementById('modal-header');
+            header.className = 'p-10 flex justify-between items-center text-white bg-gradient-to-r from-sky-600 to-blue-700';
             document.getElementById('modal-title').innerText = 'Thông Tin Cá Nhân';
             document.getElementById('modal-icon').innerHTML = '<i data-lucide="user" class="w-7 h-7"></i>';
-            document.getElementById('modal-content').innerHTML = `
-                <div class="flex flex-col items-center mb-6"><div class="w-52 h-52 rounded-[4rem] bg-white border-8 border-sky-50 flex items-center justify-center overflow-hidden shadow-2xl rotate-2">${student.avatar_image ? `<img src="${student.avatar_image}" class="w-full h-full object-cover">` : `<i data-lucide="user" class="text-sky-100 w-24 h-24"></i>`}</div></div>
-                <div class="grid gap-8"><div class="space-y-3"><label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3"><i data-lucide="user" class="w-4 h-4 text-blue-400"></i> Tên tớ là...</label><div class="px-10 py-6 bg-white rounded-[2.5rem] font-black text-4xl text-blue-950 shadow-inner border-b-8 border-blue-50">${student.name}</div></div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div class="space-y-3"><label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3"><i data-lucide="calendar" class="w-4 h-4 text-emerald-400"></i> Sinh nhật</label><div class="px-8 py-5 bg-white rounded-[2rem] font-black text-slate-700 shadow-inner border-l-[10px] border-emerald-400">${student.birthday || 'Bí mật...'}</div></div>
-                <div class="space-y-3"><label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3"><i data-lucide="rocket" class="w-4 h-4 text-orange-400"></i> Ước mơ</label><div class="px-8 py-5 bg-orange-50 rounded-[2rem] font-black text-orange-700 shadow-inner">${student.dream || 'Bay thật xa'}</div></div></div>
-                <div class="space-y-3"><label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3"><i data-lucide="heart" class="w-4 h-4 text-red-400"></i> Sở thích</label><div class="px-10 py-8 bg-white rounded-[2.5rem] text-slate-600 font-bold leading-relaxed italic border-t-8 border-sky-50 shadow-inner text-lg">"${student.hobby || 'Một bí ẩn...'}"</div></div></div>`;
+
+            const content = document.getElementById('modal-content');
+            content.innerHTML = `
+                <div class="flex flex-col items-center mb-6">
+                    <div class="w-52 h-52 rounded-[4rem] bg-white border-8 border-sky-50 flex items-center justify-center overflow-hidden shadow-2xl rotate-2">
+                        ${student.avatar_image ? `<img src="${student.avatar_image}" class="w-full h-full object-cover">` : `<i data-lucide="user" class="text-sky-100 w-24 h-24"></i>`}
+                    </div>
+                </div>
+                <div class="grid gap-8">
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3"><i data-lucide="user" class="w-4 h-4 text-blue-400"></i> Tên tớ là...</label>
+                        <div class="px-10 py-6 bg-white rounded-[2.5rem] font-black text-4xl text-blue-950 shadow-inner border-b-8 border-blue-50">${student.name}</div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3"><i data-lucide="calendar" class="w-4 h-4 text-emerald-400"></i> Sinh nhật</label>
+                            <div class="px-8 py-5 bg-white rounded-[2rem] font-black text-slate-700 shadow-inner border-l-[10px] border-emerald-400">${student.birthday || 'Bí mật...'}</div>
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3"><i data-lucide="rocket" class="w-4 h-4 text-orange-400"></i> Ước mơ</label>
+                            <div class="px-8 py-5 bg-orange-50 rounded-[2rem] font-black text-orange-700 shadow-inner">${student.dream || 'Bay thật xa'}</div>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3"><i data-lucide="heart" class="w-4 h-4 text-red-400"></i> Sở thích</label>
+                        <div class="px-10 py-8 bg-white rounded-[2.5rem] text-slate-600 font-bold leading-relaxed italic border-t-8 border-sky-50 shadow-inner text-lg">"${student.hobby || 'Một bí ẩn chưa có lời giải...'}"</div>
+                    </div>
+                </div>
+            `;
             lucide.createIcons();
         }
 
@@ -268,17 +352,71 @@
             if (existingData) {
                 currentTheme = existingData.color_theme || 'bg-white text-blue-900';
                 document.getElementById('delete-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('delete-btn').classList.add('hidden');
             }
-            document.getElementById('modal-header').className = 'p-10 flex justify-between items-center text-white bg-gradient-to-r from-blue-600 to-sky-500';
-            document.getElementById('modal-title').innerText = existingData ? 'Sửa Profile' : 'Tạo Profile';
-            document.getElementById('modal-content').innerHTML = `
-                <div class="flex flex-col items-center mb-6"><div onclick="document.getElementById('fileInput').click()" class="relative cursor-pointer group"><div id="avatar-preview" class="w-52 h-52 rounded-[4rem] bg-white border-8 border-dashed border-blue-200 group-hover:border-blue-500 flex items-center justify-center overflow-hidden shadow-2xl transition-all duration-500 rotate-2 group-hover:rotate-0">${existingData?.avatar_image ? `<img src="${existingData.avatar_image}" class="w-full h-full object-cover">` : `<i data-lucide="user" class="text-sky-100 w-24 h-24"></i>`}</div><div class="absolute -bottom-4 -right-4 bg-blue-600 text-white p-5 rounded-[1.8rem] border-4 border-white"><i data-lucide="camera" class="w-7 h-7"></i></div><input type="file" id="fileInput" class="hidden" accept="image/*" onchange="handleImage(this)"></div></div>
-                <div class="grid gap-8"><div class="space-y-4"><label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] px-3">Bảng phối màu</label><div class="grid grid-cols-4 sm:grid-cols-8 gap-3">${colorThemes.map(t => `<div onclick="selectTheme('${t.class}', this)" class="theme-option w-full aspect-square rounded-2xl ${t.class} shadow-md ${currentTheme === t.class ? 'selected' : ''}"></div>`).join('')}</div></div>
-                <div class="space-y-3"><label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] px-3">Tên tớ là...</label><input id="form-name" placeholder="Họ và tên" class="w-full px-8 py-5 bg-white border-4 border-slate-100 rounded-[2rem] outline-none font-black" value="${existingData?.name || ''}"></div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8"><input id="form-birthday" placeholder="Sinh nhật" class="w-full px-8 py-5 bg-white border-4 border-slate-100 rounded-[2rem] outline-none font-black" value="${existingData?.birthday || ''}"><input id="form-dream" placeholder="Ước mơ" class="w-full px-8 py-5 bg-white border-4 border-slate-100 rounded-[2rem] outline-none font-black" value="${existingData?.dream || ''}"></div>
-                <textarea id="form-hobby" placeholder="Sở thích..." class="w-full px-8 py-5 bg-white border-4 border-slate-100 rounded-[2.5rem] outline-none h-32 resize-none font-black">${existingData?.hobby || ''}</textarea>
-                <div class="bg-blue-50/80 p-8 rounded-[3rem] border-4 border-blue-100"><input id="form-password" type="password" placeholder="Mật khẩu bảo vệ..." class="w-full px-8 py-5 bg-white border-4 border-blue-200 rounded-[1.5rem] outline-none font-black" value="${existingData?.password || ''}"></div>
-                <button onclick="submitForm()" id="submit-btn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-black py-7 rounded-[2.5rem] shadow-xl uppercase tracking-[0.3em] text-xl">Lưu Hồ Sơ</button></div>`;
+
+            const header = document.getElementById('modal-header');
+            header.className = 'p-10 flex justify-between items-center text-white bg-gradient-to-r from-blue-600 to-sky-500';
+            document.getElementById('modal-title').innerText = existingData ? 'Chỉnh Sửa Profile' : 'Tạo Profile';
+            document.getElementById('modal-icon').innerHTML = '<i data-lucide="rocket" class="w-7 h-7"></i>';
+
+            const content = document.getElementById('modal-content');
+            content.innerHTML = `
+                <div class="flex flex-col items-center mb-6">
+                    <div onclick="document.getElementById('fileInput').click()" class="relative cursor-pointer group">
+                        <div id="avatar-preview" class="w-52 h-52 rounded-[4rem] bg-white border-8 border-dashed border-blue-200 group-hover:border-blue-500 flex items-center justify-center overflow-hidden shadow-2xl transition-all duration-500 rotate-2 group-hover:rotate-0">
+                            ${existingData?.avatar_image ? `<img src="${existingData.avatar_image}" class="w-full h-full object-cover">` : `<i data-lucide="user" class="text-sky-100 w-24 h-24"></i>`}
+                        </div>
+                        <div class="absolute -bottom-4 -right-4 bg-blue-600 text-white p-5 rounded-[1.8rem] shadow-2xl animate-bounce border-4 border-white">
+                            <i data-lucide="camera" class="w-7 h-7"></i>
+                        </div>
+                        <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="handleImage(this)">
+                    </div>
+                </div>
+                
+                <div class="grid gap-8">
+                    <div class="space-y-4">
+                        <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3">Bảng phối màu khung tên</label>
+                        <div class="grid grid-cols-4 sm:grid-cols-8 gap-3" id="theme-selector">
+                            ${colorThemes.map(t => `
+                                <div onclick="selectTheme('${t.class}', this)" 
+                                     class="theme-option w-full aspect-square rounded-2xl ${t.class} shadow-md ${currentTheme === t.class ? 'selected' : ''}"
+                                     title="${t.name}">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3">Tên tớ là...</label>
+                        <input id="form-name" placeholder="Nhập họ và tên đầy đủ" class="w-full px-8 py-5 bg-white border-4 border-slate-100 focus:border-blue-400 rounded-[2rem] outline-none font-black text-blue-900 shadow-inner" value="${existingData?.name || ''}">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3">Sinh nhật</label>
+                            <input id="form-birthday" placeholder="Ngày/Tháng/Năm" class="w-full px-8 py-5 bg-white border-4 border-slate-100 focus:border-blue-400 rounded-[2rem] outline-none font-black text-blue-900" value="${existingData?.birthday || ''}">
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3">Ước mơ</label>
+                            <input id="form-dream" placeholder="Sau này muốn làm..." class="w-full px-8 py-5 bg-white border-4 border-slate-100 focus:border-blue-400 rounded-[2rem] outline-none font-black text-blue-900" value="${existingData?.dream || ''}">
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3">Sở thích</label>
+                        <textarea id="form-hobby" placeholder="Chia sẻ những điều bạn thích..." class="w-full px-8 py-5 bg-white border-4 border-slate-100 focus:border-blue-400 rounded-[2.5rem] outline-none h-32 resize-none font-black text-blue-900 shadow-inner">${existingData?.hobby || ''}</textarea>
+                    </div>
+                    <div class="space-y-4 bg-blue-50/80 p-8 rounded-[3rem] border-4 border-blue-100">
+                        <label class="text-xs font-black text-blue-600 uppercase tracking-widest flex items-center gap-2"><i data-lucide="lock" class="w-4 h-4"></i> Mật khẩu bảo vệ</label>
+                        <input id="form-password" type="password" placeholder="Mật khẩu để sửa sau này..." class="w-full px-8 py-5 bg-white border-4 border-blue-200 focus:border-blue-600 rounded-[1.5rem] outline-none font-black text-blue-950 shadow-inner" value="${existingData?.password || ''}">
+                    </div>
+                    <div class="pt-4">
+                        <button onclick="submitForm()" id="submit-btn" class="w-full bg-gradient-to-r from-blue-600 via-sky-600 to-indigo-700 text-white font-black py-7 rounded-[2.5rem] shadow-[0_15px_30px_rgba(37,99,235,0.4)] hover:-translate-y-1 active:translate-y-1 active:shadow-none transition-all uppercase tracking-[0.3em] text-xl">
+                            ${existingData ? 'Cập Nhật Profile' : 'Gia Nhập Lớp 6A2'}
+                        </button>
+                    </div>
+                </div>
+            `;
             lucide.createIcons();
         }
 
@@ -290,12 +428,28 @@
 
         function editCurrentProfile() {
             viewMode = 'auth';
-            document.getElementById('modal-header').className = 'p-10 flex justify-between items-center text-white bg-amber-500';
-            document.getElementById('modal-content').innerHTML = `
-                <div class="text-center py-12 space-y-8"><div class="w-28 h-28 bg-amber-100 text-amber-600 rounded-[2.5rem] flex items-center justify-center mx-auto"><i data-lucide="lock" class="w-14 h-14"></i></div>
-                <input id="verify-pass" type="password" placeholder="Nhập mật khẩu..." class="w-full px-8 py-6 bg-white border-4 border-slate-100 rounded-[2rem] outline-none text-center text-2xl font-black">
-                <div id="auth-error" class="text-red-500 text-sm font-black hidden">Sai mật khẩu!</div>
-                <button onclick="verifyPassword()" class="w-full bg-amber-500 text-white font-black py-6 rounded-[2rem] shadow-lg uppercase text-xl">Xác Nhận</button></div>`;
+            const header = document.getElementById('modal-header');
+            header.className = 'p-10 flex justify-between items-center text-white bg-amber-500';
+            document.getElementById('modal-title').innerText = 'Xác Minh';
+            document.getElementById('modal-icon').innerHTML = '<i data-lucide="lock" class="w-7 h-7"></i>';
+            document.getElementById('edit-btn').classList.add('hidden');
+            document.getElementById('delete-btn').classList.add('hidden');
+
+            const content = document.getElementById('modal-content');
+            content.innerHTML = `
+                <div class="text-center py-12 space-y-8">
+                    <div class="w-28 h-28 bg-amber-100 text-amber-600 rounded-[2.5rem] flex items-center justify-center mx-auto shadow-inner">
+                        <i data-lucide="lock" class="w-14 h-14 animate-pulse"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-3xl font-black text-slate-800">Nhập mật khẩu</h4>
+                        <p class="text-slate-500 font-bold mt-2">Xác nhận mật khẩu để sửa hồ sơ.</p>
+                    </div>
+                    <input id="verify-pass" type="password" autoFocus placeholder="..." class="w-full px-8 py-6 bg-white border-4 border-slate-100 focus:border-amber-400 rounded-[2rem] outline-none text-center text-2xl font-black text-amber-600 shadow-xl transition-all">
+                    <div id="auth-error" class="text-red-500 text-sm font-black hidden">Mật khẩu không chính xác!</div>
+                    <button onclick="verifyPassword()" class="w-full bg-amber-500 text-white font-black py-6 rounded-[2rem] shadow-[0_10px_0_rgb(217,119,6)] active:translate-y-2 active:shadow-none transition-all uppercase tracking-widest text-xl">Xác Nhận</button>
+                </div>
+            `;
             lucide.createIcons();
         }
 
@@ -305,34 +459,72 @@
             if (student && student.password === pass) {
                 viewMode = 'edit';
                 renderEditContent(student);
-            } else { document.getElementById('auth-error').classList.remove('hidden'); }
+            } else {
+                document.getElementById('auth-error').classList.remove('hidden');
+            }
         }
 
         function confirmDelete() {
             const student = students[selectedSlot];
-            document.getElementById('modal-header').className = 'p-10 flex justify-between items-center text-white bg-rose-600';
-            document.getElementById('modal-content').innerHTML = `
-                <div class="text-center py-12 space-y-8"><div class="w-28 h-28 bg-rose-100 text-rose-600 rounded-[2.5rem] flex items-center justify-center mx-auto"><i data-lucide="trash-2" class="w-14 h-14"></i></div>
-                <p class="font-bold">Nhập tên <span class="text-rose-600">"${student.name}"</span> để xóa.</p>
-                <input id="confirm-name-delete" type="text" class="w-full px-8 py-6 bg-white border-4 border-slate-100 rounded-[2rem] outline-none text-center font-black">
-                <div id="delete-error" class="text-red-500 text-sm font-black hidden">Không khớp!</div>
-                <div class="flex gap-4"><button onclick="renderEditContent(students[selectedSlot])" class="flex-1 bg-slate-200 py-6 rounded-[2rem] font-black">Hủy</button>
-                <button onclick="executeDelete()" class="flex-[2] bg-rose-600 text-white py-6 rounded-[2rem] font-black shadow-lg">Xóa</button></div></div>`;
+            if (!student) return;
+
+            const header = document.getElementById('modal-header');
+            header.className = 'p-10 flex justify-between items-center text-white bg-rose-600';
+            document.getElementById('modal-title').innerText = 'Xóa Profile';
+            document.getElementById('modal-icon').innerHTML = '<i data-lucide="alert-triangle" class="w-7 h-7"></i>';
+            document.getElementById('delete-btn').classList.add('hidden');
+
+            const content = document.getElementById('modal-content');
+            content.innerHTML = `
+                <div class="text-center py-12 space-y-8">
+                    <div class="w-28 h-28 bg-rose-100 text-rose-600 rounded-[2.5rem] flex items-center justify-center mx-auto shadow-inner">
+                        <i data-lucide="trash-2" class="w-14 h-14 animate-bounce"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-3xl font-black text-slate-800 uppercase tracking-tight">Xác nhận xóa slot</h4>
+                        <p class="text-slate-500 font-bold mt-2">Nhập chính xác tên của bạn <span class="text-rose-600">"${student.name}"</span> để xóa.</p>
+                    </div>
+                    <input id="confirm-name-delete" type="text" placeholder="Nhập tên tại đây..." class="w-full px-8 py-6 bg-white border-4 border-slate-100 focus:border-rose-400 rounded-[2rem] outline-none text-center text-2xl font-black text-rose-600 shadow-xl">
+                    <div id="delete-error" class="text-red-500 text-sm font-black hidden">Tên không khớp!</div>
+                    <div class="flex gap-4">
+                        <button onclick="renderEditContent(students[selectedSlot])" class="flex-1 bg-slate-200 text-slate-700 font-black py-6 rounded-[2rem] hover:bg-slate-300 transition-all uppercase tracking-widest text-lg">Hủy</button>
+                        <button onclick="executeDelete()" class="flex-[2] bg-rose-600 text-white font-black py-6 rounded-[2rem] shadow-[0_10px_0_rgb(159,18,57)] active:translate-y-2 active:shadow-none transition-all uppercase tracking-widest text-lg">Xóa Vĩnh Viễn</button>
+                    </div>
+                </div>
+            `;
             lucide.createIcons();
         }
 
         async function executeDelete() {
             const inputName = document.getElementById('confirm-name-delete').value;
-            if (inputName === students[selectedSlot].name) {
-                const { error } = await db.from('students').delete().eq('id', selectedSlot);
-                if (!error) { localStorage.removeItem('6A2_my_slot'); mySlotIndex = null; await fetchStudents(); closeModal(); }
-            } else { document.getElementById('delete-error').classList.remove('hidden'); }
+            const student = students[selectedSlot];
+            
+            if (inputName === student.name) {
+                try {
+                    const { error } = await supabaseClient.from('students').delete().eq('id', selectedSlot);
+                    if (error) throw error;
+                    
+                    localStorage.removeItem('6A2_my_slot');
+                    mySlotIndex = null;
+                    await fetchStudents();
+                    closeModal();
+                } catch (err) {
+                    alert("Lỗi khi xóa: " + err.message);
+                }
+            } else {
+                document.getElementById('delete-error').classList.remove('hidden');
+            }
         }
+
+        let currentImageBase64 = null;
 
         function handleImage(input) {
             const file = input.files[0];
             if (file) {
-                if (file.size > 800 * 1024) { alert("Ảnh quá lớn (<800KB)!"); return; }
+                if (file.size > 800 * 1024) {
+                    alert("Ảnh quá lớn! Vui lòng chọn ảnh dưới 800KB.");
+                    return;
+                }
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     currentImageBase64 = e.target.result;
@@ -345,20 +537,49 @@
         async function submitForm() {
             const name = document.getElementById('form-name').value;
             const password = document.getElementById('form-password').value;
-            if (!name || !password) { alert("Thiếu tên hoặc mật khẩu!"); return; }
-            document.getElementById('submit-btn').innerText = "ĐANG LƯU...";
+            const btn = document.getElementById('submit-btn');
+
+            if (!name || !password) {
+                alert("Vui lòng điền tên và mật khẩu!");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "ĐANG LƯU...";
+
             const studentData = {
-                id: selectedSlot, name: name, birthday: document.getElementById('form-birthday').value,
-                dream: document.getElementById('form-dream').value, hobby: document.getElementById('form-hobby').value,
-                password: password, color_theme: currentTheme, 
+                id: selectedSlot,
+                name: name,
+                birthday: document.getElementById('form-birthday').value,
+                dream: document.getElementById('form-dream').value,
+                hobby: document.getElementById('form-hobby').value,
+                password: password,
+                color_theme: currentTheme, 
                 avatar_image: currentImageBase64 || (students[selectedSlot]?.avatar_image || null)
             };
-            const { error } = await db.from('students').upsert(studentData);
-            if (error) { alert("Lỗi lưu dữ liệu!"); document.getElementById('submit-btn').innerText = "Lưu Hồ Sơ"; }
-            else { localStorage.setItem('6A2_my_slot', selectedSlot); mySlotIndex = selectedSlot; await fetchStudents(); closeModal(); }
+
+            try {
+                // Sử dụng upsert để thêm mới hoặc cập nhật dựa trên id
+                const { error } = await supabaseClient.from('students').upsert(studentData);
+                
+                if (error) throw error;
+
+                localStorage.setItem('6A2_my_slot', selectedSlot);
+                mySlotIndex = selectedSlot;
+                await fetchStudents();
+                closeModal();
+                currentImageBase64 = null;
+            } catch (err) {
+                alert("Lỗi khi lưu dữ liệu: " + err.message);
+                btn.disabled = false;
+                btn.innerText = "THỬ LẠI";
+            }
         }
 
-        window.onload = () => { initDecorations(); fetchStudents(); };
+        window.onload = () => {
+            initDecorations();
+            fetchStudents(); 
+        };
     </script>
 </body>
 </html>
