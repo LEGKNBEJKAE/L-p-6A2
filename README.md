@@ -25,15 +25,6 @@ Chúng mình là tập thể lớp 6A2, gồm **50 thành viên** cực kỳ nă
 
 ---
 
-### 💡 Mẹo để README trông đẹp hơn nữa:
-1.  **Sử dụng Font chữ lạ:** Bạn có thể dùng các trang web tạo "Fancy Text" để đổi kiểu chữ như `𝟔𝐀𝟐` (nhưng đừng lạm dụng quá nhé, để mọi người vẫn đọc được).
-2.  **Thêm Sticker:** Bạn có thể tìm các link ảnh GIF nhỏ (pixel art) để chèn vào giữa các đoạn văn.
-3.  **Ký hiệu (Symbol):** Tận dụng các ký hiệu như `◈ ◉ ◊ ○ ◘ ◙` để làm đầu dòng thay vì dấuĐể giới thiệu một trang web thú vị như vậy (nơi các bạn lớp 6A2 có thể "giành" lấy một ô để khẳng định bản sắc riêng), bản README của bạn cũng cần phải thật cá tính và rực rỡ.
-
-Dưới đây là mẫu README được thiết kế với các ký hiệu đặc biệt (ASCII art, emoji, badges) để bạn trang trí cho dự án của mình:
-
----
-
 # 🛸 𝟔𝐀𝟐 - 𝐓𝐇𝐄 𝐒𝐋𝐎𝐓 𝐔𝐍𝐈𝐕𝐄𝐑𝐒𝐄 🪐
 
 <p align="center">
