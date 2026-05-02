@@ -6,6 +6,8 @@
     <title>Lớp 6A2 - THCS Long Trường</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- THƯ VIỆN SUPABASE - ĐỂ LƯU TRỮ TRỰC TUYẾN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         body {
@@ -155,11 +157,17 @@
     </footer>
 
     <script>
-        // --- DATA MANAGEMENT ---
-        let students = JSON.parse(localStorage.getItem('6A2_students') || '{}');
+        // --- CẤU HÌNH SUPABASE (TRỰC TUYẾN) ---
+        const SB_URL = 'https://kwaxleppbbrjukcrofoz.supabase.co';
+        const SB_KEY = 'sb_publishable_YAOpIhazDHiiEb7gyYI4pw_y91wzrTG'; 
+        const _supabase = supabase.createClient(SB_URL, SB_KEY);
+
+        // --- QUẢN LÝ DỮ LIỆU ---
+        let students = {};
         let selectedSlot = null;
         let viewMode = 'view';
-        let currentTheme = 'bg-white'; // Mặc định
+        let currentTheme = 'bg-white text-blue-900';
+        let currentImageBase64 = null;
 
         const colorThemes = [
             { name: 'Trắng tinh khôi', class: 'bg-white text-blue-900' },
@@ -172,8 +180,17 @@
             { name: 'Đại dương', class: 'bg-gradient-to-br from-cyan-200 to-blue-300 text-blue-950' }
         ];
 
-        function saveToLocal() {
-            localStorage.setItem('6A2_students', JSON.stringify(students));
+        // Tải dữ liệu từ Supabase thay vì LocalStorage
+        async function loadStudents() {
+            const { data, error } = await _supabase.from('students').select('*');
+            if (error) {
+                console.error("Lỗi khi tải dữ liệu:", error);
+                return;
+            }
+            students = {};
+            data.forEach(item => {
+                students[item.slot_index] = item;
+            });
             renderGrid();
         }
 
@@ -228,7 +245,6 @@
                 const btn = document.createElement('button');
                 btn.onclick = () => handleOpenSlot(i);
                 
-                // Lấy theme màu
                 const themeClass = student?.colorTheme || 'bg-white text-blue-900';
 
                 btn.className = `
@@ -280,7 +296,7 @@
             } else {
                 viewMode = 'edit';
                 editBtn.classList.add('hidden');
-                currentTheme = 'bg-white text-blue-900'; // Reset theme mặc định cho slot mới
+                currentTheme = 'bg-white text-blue-900';
                 renderEditContent();
             }
             
@@ -355,7 +371,6 @@
                 </div>
                 
                 <div class="grid gap-8">
-                    <!-- Color Picker Section -->
                     <div class="space-y-4">
                         <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3">Bảng phối màu khung tên</label>
                         <div class="grid grid-cols-4 sm:grid-cols-8 gap-3" id="theme-selector">
@@ -443,9 +458,6 @@
             }
         }
 
-        // --- FORM HANDLERS ---
-        let currentImageBase64 = null;
-
         function handleImage(input) {
             const file = input.files[0];
             if (file) {
@@ -462,7 +474,7 @@
             }
         }
 
-        function submitForm() {
+        async function submitForm() {
             const name = document.getElementById('form-name').value;
             const password = document.getElementById('form-password').value;
 
@@ -472,26 +484,35 @@
             }
 
             const studentData = {
+                slot_index: selectedSlot,
                 name: name,
                 birthday: document.getElementById('form-birthday').value,
                 dream: document.getElementById('form-dream').value,
                 hobby: document.getElementById('form-hobby').value,
                 password: password,
-                colorTheme: currentTheme, // Lưu màu sắc đã chọn
+                colorTheme: currentTheme,
                 avatarImage: currentImageBase64 || (students[selectedSlot]?.avatarImage || null),
-                updatedAt: new Date().toISOString()
+                updated_at: new Date().toISOString()
             };
 
-            students[selectedSlot] = studentData;
-            saveToLocal();
-            closeModal();
-            currentImageBase64 = null;
+            // LƯU LÊN SUPABASE
+            const { error } = await _supabase
+                .from('students')
+                .upsert(studentData, { onConflict: 'slot_index' });
+
+            if (error) {
+                alert("Lỗi khi lưu: " + error.message);
+            } else {
+                closeModal();
+                currentImageBase64 = null;
+                loadStudents(); // Tải lại dữ liệu mới
+            }
         }
 
         // --- INIT ---
         window.onload = () => {
             initDecorations();
-            renderGrid();
+            loadStudents();
         };
     </script>
 </body>
