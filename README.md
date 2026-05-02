@@ -32,7 +32,7 @@ Chúng mình là tập thể lớp 6A2, gồm **50 thành viên** cực kỳ nă
 Đây là dự án Web Profile dành riêng cho tập thể lớp **6A2 - Trường THCS Long Trường**[cite: 1]. Trang web tạo ra một không gian tương tác hiện đại, nơi mỗi học sinh có thể "đặt chỗ" (claim slot) và tự thiết kế trang cá nhân của mình[cite: 1].
 
 > [!IMPORTANT]
-> **Điểm đặc biệt:** Giao diện web thay đổi theo thời gian thực với bầu trời đầy sao, mây trôi và mặt trời lấp lánh, tượng trưng cho những ước mơ bay cao của các thành viên 6A2[cite: 1].
+> **Điểm đặc biệt:** Giao diện web thay đổi theo thời gian thực với bầu trời đầy sao, mây trôi và mặt trời lấp lánh, tượng trưng cho những ước mơ bay cao của các thành viên 6A2.
 
 ---
 
