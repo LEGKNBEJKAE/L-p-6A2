@@ -11,7 +11,7 @@ Web hiện tại chỉ sử dụng **LocalStorage** (dữ liệu lưu trên máy
 
 ### 📫 Liên hệ:
 *   📧 **Email:** trinhtrungkien04042014@gmail.com
-*   🏫 **Địa chỉ:** Trường THCS Long TrườngDưới đây là toàn bộ nội dung file **README.md** đã được tổng hợp, sắp xếp lại một cách thẩm mỹ và chuyên nghiệp nhất dựa trên mã nguồn và yêu cầu của bạn:
+*   🏫 **Địa chỉ:** Trường THCS Long Trường
 
 ---
 
