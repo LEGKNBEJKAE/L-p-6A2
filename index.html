@@ -17,8 +17,12 @@
         @keyframes floatOver { 0% { transform: translateX(-500px); } 100% { transform: translateX(calc(100vw + 500px)); } }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 0.8; transform: scale(1.2); } }
         @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.5); border-color: #ffd700; } 50% { box-shadow: 0 0 40px rgba(255,215,0,0.8); border-color: #facc15; } }
+        
         .animate-spin-slow { animation: spin-slow 30s linear infinite; }
         .animate-twinkle { animation: twinkle linear infinite; }
+        .monitor-glow { animation: glow 2s ease-in-out infinite; border-width: 4px !important; }
+        
         .custom-scrollbar::-webkit-scrollbar { width: 8px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #bae6fd; border-radius: 20px; border: 2px solid white; }
@@ -26,9 +30,46 @@
         
         .theme-option { cursor: pointer; transition: all 0.3s; border: 4px solid transparent; }
         .theme-option.selected { border-color: #3b82f6; transform: scale(1.1); }
+
+        /* Command Line Style */
+        #cmd-line {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: #000;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            min-width: 300px;
+            width: auto;
+            max-width: 90vw;
+            border: 1px solid #333;
+        }
+        #cmd-input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            outline: none;
+            font-family: monospace;
+            width: 100%;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-b from-[#e0f2fe] via-[#38bdf8] to-[#0c4a6e] relative selection:bg-blue-200 text-slate-800">
+
+    <!-- Command Line Interface -->
+    <div id="cmd-line">
+        <div class="flex items-center gap-2">
+            <span class="text-white font-bold">/</span>
+            <input type="text" id="cmd-input" placeholder="Nhập lệnh..." autocomplete="off">
+        </div>
+    </div>
 
     <div id="stars-container" class="fixed inset-0 pointer-events-none"></div>
 
@@ -94,6 +135,9 @@
                 <span class="flex items-center gap-3 bg-white/30 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/30 text-white shadow-lg">
                     <div class="w-4 h-4 bg-sky-400 rounded-full shadow-[0_0_12px_rgba(56,189,248,1)]"></div> Đã chọn
                 </span>
+                <span class="flex items-center gap-3 bg-white/30 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/30 text-white shadow-lg">
+                    <div class="w-4 h-4 bg-yellow-400 rounded-full shadow-[0_0_12px_rgba(250,204,21,1)]"></div> Lớp trưởng
+                </span>
             </div>
         </div>
 
@@ -152,7 +196,6 @@
         // --- SUPABASE CONFIGURATION ---
         const _supabaseUrl = 'https://cwesurvjawhkqeirgdgf.supabase.co'; 
         const _supabaseKey = 'sb_publishable_igNeOf3XW_vHXF9G4IYcqQ_vlKgzq0d'; 
-        // Khởi tạo client supabase đúng cách (tránh trùng tên biến với thư viện)
         const supabaseClient = supabase.createClient(_supabaseUrl, _supabaseKey);
 
         // --- DATA MANAGEMENT ---
@@ -239,11 +282,13 @@
                 btn.onclick = () => handleOpenSlot(i);
                 
                 const themeClass = student?.color_theme || 'bg-white text-blue-900';
+                const isMonitor = student?.role === 'monitor';
+                const nameColor = student?.name_color || '';
 
                 btn.className = `
                     aspect-square rounded-[3rem] transition-all duration-500 transform hover:scale-105 active:scale-95 shadow-2xl flex flex-col items-center justify-center p-3 relative overflow-hidden group
                     ${student 
-                        ? `${themeClass} border-4 border-white/50` 
+                        ? `${themeClass} border-4 ${isMonitor ? 'monitor-glow' : 'border-white/50'}` 
                         : 'bg-white/20 hover:bg-white/40 border-4 border-dashed border-white/50 backdrop-blur-md'}
                 `;
 
@@ -251,12 +296,13 @@
                     const shortName = student.name.split(' ').slice(-2).join(' ');
                     btn.innerHTML = `
                         <div class="flex flex-col items-center w-full h-full justify-between py-2">
+                            ${isMonitor ? '<div class="absolute -top-1 -right-1 z-20"><i data-lucide="crown" class="w-8 h-8 text-yellow-400 fill-yellow-400 drop-shadow-lg"></i></div>' : ''}
                             <div class="w-24 h-24 md:w-28 md:h-28 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl bg-sky-50 group-hover:rotate-3 transition-transform">
                                 ${student.avatar_image ? `<img src="${student.avatar_image}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-sky-200"><i data-lucide="user" class="w-12 h-12"></i></div>`}
                             </div>
                             <div class="w-full">
-                                <span class="text-base md:text-lg font-black block truncate px-2">${shortName}</span>
-                                <span class="text-[10px] font-bold opacity-60 block uppercase tracking-tighter">6A2 Long Trường</span>
+                                <span class="text-base md:text-lg font-black block truncate px-2" style="color: ${nameColor}">${shortName}</span>
+                                <span class="text-[10px] font-bold opacity-60 block uppercase tracking-tighter">${isMonitor ? 'Lớp Trưởng 6A2' : '6A2 Long Trường'}</span>
                             </div>
                         </div>
                     `;
@@ -273,6 +319,57 @@
             lucide.createIcons();
         }
 
+        // --- COMMAND LINE LOGIC ---
+        window.addEventListener('keydown', (e) => {
+            if (e.key === '/') {
+                // Prevent opening if modal is open and focusing input
+                if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+                
+                e.preventDefault();
+                const cmdLine = document.getElementById('cmd-line');
+                const cmdInput = document.getElementById('cmd-input');
+                cmdLine.style.display = 'block';
+                cmdInput.focus();
+            }
+            if (e.key === 'Escape') {
+                document.getElementById('cmd-line').style.display = 'none';
+            }
+        });
+
+        document.getElementById('cmd-input').addEventListener('keypress', async (e) => {
+            if (e.key === 'Enter') {
+                const input = e.target.value.trim();
+                const parts = input.split(' ');
+                const command = parts[0];
+
+                if (command === 'set_monitor') {
+                    const slotId = parseInt(parts[1]) - 1;
+                    if (isNaN(slotId) || slotId < 0 || slotId >= 50) {
+                        alert("ID không hợp lệ!");
+                    } else if (!students[slotId]) {
+                        alert("Ô này chưa có người đăng ký!");
+                    } else {
+                        try {
+                            const { error } = await supabaseClient
+                                .from('students')
+                                .update({ role: 'monitor' })
+                                .eq('id', slotId);
+                            if (error) throw error;
+                            alert(`Đã thiết lập #${slotId + 1} làm Lớp trưởng!`);
+                            fetchStudents();
+                        } catch (err) {
+                            alert("Lỗi: " + err.message);
+                        }
+                    }
+                } else {
+                    alert("Lệnh không tồn tại!");
+                }
+                
+                e.target.value = '';
+                document.getElementById('cmd-line').style.display = 'none';
+            }
+        });
+
         function handleOpenSlot(index) {
             selectedSlot = index;
             const student = students[index];
@@ -288,9 +385,7 @@
                 editBtn.classList.remove('hidden');
                 renderViewContent(student);
             } else {
-                // Kiểm tra xem người dùng này đã có slot chưa dựa trên localStorage
                 if (mySlotIndex !== null && students[mySlotIndex]) {
-                    // Nếu đã có slot rồi, chỉ cho phép xem hoặc sửa chính slot đó
                     alert(`Bạn đã có profile tại ô số #${parseInt(mySlotIndex) + 1}. Không thể tạo thêm ô mới!`);
                     return;
                 }
@@ -314,20 +409,20 @@
         function renderViewContent(student) {
             const header = document.getElementById('modal-header');
             header.className = 'p-10 flex justify-between items-center text-white bg-gradient-to-r from-sky-600 to-blue-700';
-            document.getElementById('modal-title').innerText = 'Thông Tin Cá Nhân';
-            document.getElementById('modal-icon').innerHTML = '<i data-lucide="user" class="w-7 h-7"></i>';
+            document.getElementById('modal-title').innerText = student.role === 'monitor' ? 'Hồ Sơ Lớp Trưởng' : 'Thông Tin Cá Nhân';
+            document.getElementById('modal-icon').innerHTML = student.role === 'monitor' ? '<i data-lucide="crown" class="w-7 h-7"></i>' : '<i data-lucide="user" class="w-7 h-7"></i>';
 
             const content = document.getElementById('modal-content');
             content.innerHTML = `
                 <div class="flex flex-col items-center mb-6">
-                    <div class="w-52 h-52 rounded-[4rem] bg-white border-8 border-sky-50 flex items-center justify-center overflow-hidden shadow-2xl rotate-2">
+                    <div class="w-52 h-52 rounded-[4rem] bg-white border-8 ${student.role === 'monitor' ? 'border-yellow-400' : 'border-sky-50'} flex items-center justify-center overflow-hidden shadow-2xl rotate-2">
                         ${student.avatar_image ? `<img src="${student.avatar_image}" class="w-full h-full object-cover">` : `<i data-lucide="user" class="text-sky-100 w-24 h-24"></i>`}
                     </div>
                 </div>
                 <div class="grid gap-8">
                     <div class="space-y-3">
                         <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3"><i data-lucide="user" class="w-4 h-4 text-blue-400"></i> Tên tớ là...</label>
-                        <div class="px-10 py-6 bg-white rounded-[2.5rem] font-black text-4xl text-blue-950 shadow-inner border-b-8 border-blue-50">${student.name}</div>
+                        <div class="px-10 py-6 bg-white rounded-[2.5rem] font-black text-4xl shadow-inner border-b-8 border-blue-50" style="color: ${student.name_color || '#1e3a8a'}">${student.name}</div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-3">
@@ -376,6 +471,13 @@
                 </div>
                 
                 <div class="grid gap-8">
+                    ${existingData?.role === 'monitor' ? `
+                    <div class="space-y-4 bg-yellow-50 p-6 rounded-[2.5rem] border-4 border-yellow-200">
+                        <label class="text-xs font-black text-yellow-700 uppercase tracking-[0.3em] flex items-center gap-2 px-3"><i data-lucide="palette" class="w-4 h-4"></i> Đặc quyền Lớp trưởng: Màu tên</label>
+                        <input type="color" id="form-name-color" class="w-full h-16 rounded-xl cursor-pointer bg-white p-2" value="${existingData.name_color || '#1e3a8a'}">
+                    </div>
+                    ` : ''}
+
                     <div class="space-y-4">
                         <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3">Bảng phối màu khung tên</label>
                         <div class="grid grid-cols-4 sm:grid-cols-8 gap-3" id="theme-selector">
@@ -537,6 +639,7 @@
         async function submitForm() {
             const name = document.getElementById('form-name').value;
             const password = document.getElementById('form-password').value;
+            const nameColorEl = document.getElementById('form-name-color');
             const btn = document.getElementById('submit-btn');
 
             if (!name || !password) {
@@ -555,11 +658,12 @@
                 hobby: document.getElementById('form-hobby').value,
                 password: password,
                 color_theme: currentTheme, 
-                avatar_image: currentImageBase64 || (students[selectedSlot]?.avatar_image || null)
+                avatar_image: currentImageBase64 || (students[selectedSlot]?.avatar_image || null),
+                name_color: nameColorEl ? nameColorEl.value : (students[selectedSlot]?.name_color || ''),
+                role: students[selectedSlot]?.role || 'student'
             };
 
             try {
-                // Sử dụng upsert để thêm mới hoặc cập nhật dựa trên id
                 const { error } = await supabaseClient.from('students').upsert(studentData);
                 
                 if (error) throw error;
