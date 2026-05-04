@@ -19,6 +19,19 @@
         @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.5); border-color: #ffd700; } 50% { box-shadow: 0 0 40px rgba(255,215,0,0.8); border-color: #facc15; } }
         
+        /* Hiệu ứng Early Access lấp lánh */
+        @keyframes star-pulse {
+            0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 2px white); }
+            50% { opacity: 0.5; transform: scale(0.7) rotate(180deg); filter: drop-shadow(0 0 5px rgba(255,255,255,0.8)); }
+        }
+        .early-access-star {
+            position: absolute;
+            color: #e2e8f0; /* Silver */
+            animation: star-pulse 2s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 20;
+        }
+
         .animate-spin-slow { animation: spin-slow 30s linear infinite; }
         .animate-twinkle { animation: twinkle linear infinite; }
         .monitor-glow { animation: glow 2s ease-in-out infinite; border-width: 4px !important; }
@@ -283,6 +296,7 @@
                 
                 const themeClass = student?.color_theme || 'bg-white text-blue-900';
                 const isMonitor = student?.role === 'monitor';
+                const isEarlyAccess = student?.is_early_access === true;
                 const nameColor = student?.name_color || '';
 
                 btn.className = `
@@ -294,13 +308,29 @@
 
                 if (student) {
                     const shortName = student.name.split(' ').slice(-2).join(' ');
+                    
+                    // Tạo HTML cho các ngôi sao bạc Early Access
+                    let earlyAccessStars = '';
+                    if (isEarlyAccess) {
+                        const starPositions = [
+                            {t:'10%', l:'10%', d:'0s'}, {t:'10%', r:'10%', d:'0.4s'},
+                            {b:'15%', l:'15%', d:'0.8s'}, {b:'15%', r:'15%', d:'1.2s'},
+                            {t:'45%', l:'-5%', d:'1.6s'}, {t:'45%', r:'-5%', d:'2s'}
+                        ];
+                        earlyAccessStars = starPositions.map(p => `
+                            <i data-lucide="sparkle" class="early-access-star w-4 h-4" 
+                               style="top:${p.t || 'auto'}; bottom:${p.b || 'auto'}; left:${p.l || 'auto'}; right:${p.r || 'auto'}; animation-delay:${p.d}"></i>
+                        `).join('');
+                    }
+
                     btn.innerHTML = `
-                        <div class="flex flex-col items-center w-full h-full justify-between py-2">
-                            ${isMonitor ? '<div class="absolute -top-1 -right-1 z-20"><i data-lucide="crown" class="w-8 h-8 text-yellow-400 fill-yellow-400 drop-shadow-lg"></i></div>' : ''}
-                            <div class="w-24 h-24 md:w-28 md:h-28 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl bg-sky-50 group-hover:rotate-3 transition-transform">
+                        <div class="flex flex-col items-center w-full h-full justify-between py-2 relative">
+                            ${earlyAccessStars}
+                            ${isMonitor ? '<div class="absolute -top-1 -right-1 z-30"><i data-lucide="crown" class="w-8 h-8 text-yellow-400 fill-yellow-400 drop-shadow-lg"></i></div>' : ''}
+                            <div class="w-24 h-24 md:w-28 md:h-28 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl bg-sky-50 group-hover:rotate-3 transition-transform relative z-10">
                                 ${student.avatar_image ? `<img src="${student.avatar_image}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-sky-200"><i data-lucide="user" class="w-12 h-12"></i></div>`}
                             </div>
-                            <div class="w-full">
+                            <div class="w-full z-10">
                                 <span class="text-base md:text-lg font-black block truncate px-2" style="color: ${nameColor}">${shortName}</span>
                                 <span class="text-[10px] font-bold opacity-60 block uppercase tracking-tighter">${isMonitor ? 'Lớp Trưởng 6A2' : '6A2 Long Trường'}</span>
                             </div>
@@ -322,7 +352,6 @@
         // --- COMMAND LINE LOGIC ---
         window.addEventListener('keydown', (e) => {
             if (e.key === '/') {
-                // Prevent opening if modal is open and focusing input
                 if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
                 
                 e.preventDefault();
@@ -361,7 +390,28 @@
                             alert("Lỗi: " + err.message);
                         }
                     }
-                } else {
+                } 
+                else if (command === 'early_access') {
+                    const slotId = parseInt(parts[1]) - 1;
+                    if (isNaN(slotId) || slotId < 0 || slotId >= 50) {
+                        alert("ID không hợp lệ!");
+                    } else if (!students[slotId]) {
+                        alert("Ô này chưa có người đăng ký!");
+                    } else {
+                        try {
+                            const { error } = await supabaseClient
+                                .from('students')
+                                .update({ is_early_access: true })
+                                .eq('id', slotId);
+                            if (error) throw error;
+                            alert(`Đã kích hoạt Early Access lấp lánh cho #${slotId + 1}!`);
+                            fetchStudents();
+                        } catch (err) {
+                            alert("Lỗi: " + err.message);
+                        }
+                    }
+                }
+                else {
                     alert("Lệnh không tồn tại!");
                 }
                 
@@ -660,7 +710,8 @@
                 color_theme: currentTheme, 
                 avatar_image: currentImageBase64 || (students[selectedSlot]?.avatar_image || null),
                 name_color: nameColorEl ? nameColorEl.value : (students[selectedSlot]?.name_color || ''),
-                role: students[selectedSlot]?.role || 'student'
+                role: students[selectedSlot]?.role || 'student',
+                is_early_access: students[selectedSlot]?.is_early_access || false
             };
 
             try {
