@@ -11,8 +11,8 @@ Web hiện tại chỉ sử dụng **LocalStorage** (dữ liệu lưu trên máy
 ---
 
 ### 📫 Liên hệ:
-*   📧 **Email:** TK
-*   🏫 **Địa chỉ:** Trường THCS L
+*   📧 **Email:** 
+*   🏫 **Địa chỉ:** 
 
 ---
 
