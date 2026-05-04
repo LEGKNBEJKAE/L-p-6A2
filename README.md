@@ -11,8 +11,8 @@ Web hiện tại chỉ sử dụng **LocalStorage** (dữ liệu lưu trên máy
 ---
 
 ### 📫 Liên hệ:
-*   📧 **Email:** trinhtrungkien04042014@gmail.com
-*   🏫 **Địa chỉ:** Trường THCS Long Trường
+*   📧 **Email:** TK
+*   🏫 **Địa chỉ:** Trường THCS L
 
 ---
 
