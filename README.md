@@ -70,3 +70,7 @@ Trang web sở hữu hệ thống tính năng thông minh giúp kết nối các
   ║ [ Slot 05 ] [ Slot 06 ] [ Slot 07 ] [ Slot 08 ] ║
   ║ ...                                           ║
   ╚═══════════════════════════════════════════════╝
+
+---
+
+>                                   **😍🤭Dự án đã ngừng phát triển | Mãi mãi là 1 phần với tập thể lớp 6A2😮❤️✨🤑**
