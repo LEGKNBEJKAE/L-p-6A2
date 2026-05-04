@@ -1,3 +1,4 @@
+>                                   **😍🤭Dự án đã ngừng phát triển | Mãi mãi là 1 phần với tập thể lớp 6A2😮❤️✨🤑**
 ## ⚠️ CẢNH BÁO
 > [!WARNING]
 > Website này chỉ dùng cho mục đích **tham khảo và giáo dục**. Tuyệt đối không được sử dụng mã nguồn hoặc nền tảng này vào việc không đúng mục đích hoặc gây ảnh hưởng xấu đến người khác.
@@ -70,7 +71,3 @@ Trang web sở hữu hệ thống tính năng thông minh giúp kết nối các
   ║ [ Slot 05 ] [ Slot 06 ] [ Slot 07 ] [ Slot 08 ] ║
   ║ ...                                           ║
   ╚═══════════════════════════════════════════════╝
-
----
-
->                                   **😍🤭Dự án đã ngừng phát triển | Mãi mãi là 1 phần với tập thể lớp 6A2😮❤️✨🤑**
