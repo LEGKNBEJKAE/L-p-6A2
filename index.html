@@ -1,5 +1,3 @@
---- START OF FILE index.HTML ---
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -44,7 +42,7 @@
             50% { box-shadow: 0 0 40px rgba(255,215,0,0.8); border-color: #facc15; } 
         }
 
-        /* HIỆU ỨNG MỚI: HÀO QUANG BẠC CHO NGƯỜI ĐƯỢC CHỌN VỀ SỚM */
+        /* HIỆU ỨNG MỚI: HÀO QUANG BẠC CHO NGƯỜI Truy cập sớm */
         @keyframes silver-glow-effect {
             0%, 100% { box-shadow: 0 0 15px rgba(192, 192, 192, 0.6); border-color: #e2e8f0; }
             50% { box-shadow: 0 0 35px rgba(226, 232, 240, 0.9); border-color: #ffffff; }
@@ -530,7 +528,7 @@
             
             const themeClass = student?.color_theme || 'bg-white text-blue-900';
             const isMonitor = student?.role === 'monitor';
-            const isEarly = student?.is_early === true; // TRẠNG THÁI VỀ SỚM MỚI
+            const isEarly = student?.is_early === true; // TRẠNG THÁI TRUY CẬP SỚM
             const nameColor = student?.name_color || '';
 
             btn.className = `
@@ -544,7 +542,7 @@
             if (student) {
                 const shortName = student.name.split(' ').slice(-2).join(' ');
                 
-                // NẾU LÀ NGƯỜI ĐƯỢC CHỌN VỀ SỚM, THÊM CÁC NGÔI SAO BẠC BAY LƠ LỬNG
+                // NẾU LÀ NGƯỜI TRUY CẬP SỚM , THÊM CÁC NGÔI SAO BẠC BAY LƠ LỬNG
                 let silverStarsHtml = '';
                 if (isEarly) {
                     for(let s=0; s<5; s++) {
@@ -566,7 +564,7 @@
                         </div>
                         <div class="w-full">
                             <span class="text-base md:text-lg font-black block truncate px-2" style="color: ${nameColor}">${shortName}</span>
-                            <span class="text-[10px] font-bold opacity-60 block uppercase tracking-tighter">${isMonitor ? 'Lớp Trưởng 6A2' : (isEarly ? 'Ưu tiên về sớm' : '6A2 Long Trường')}</span>
+                            <span class="text-[10px] font-bold opacity-60 block uppercase tracking-tighter">${isMonitor ? 'Lớp Trưởng 6A2' : (isEarly ? 'Truy cập sớm' : '6A2 Long Trường')}</span>
                         </div>
                     </div>
                 `;
