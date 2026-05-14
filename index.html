@@ -12,6 +12,7 @@
     <style>
         /**
          * HỆ THỐNG CSS CUSTOM - LỚP 6A2 LONG TRƯỜNG
+         * CẬP NHẬT: TÍNH NĂNG KHÓA CHỈNH SỬA & CỬ CHỈ SWIPE
          */
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -150,6 +151,31 @@
             50% { transform: translateY(-10px); }
         }
         .animate-bounce-subtle { animation: bounce-subtle 3s ease-in-out infinite; }
+
+        /* HIỆU ỨNG KÉO ĐỂ MỞ KHÓA */
+        .swipe-area {
+            position: relative;
+            overflow: hidden;
+            touch-action: pan-x;
+            user-select: none;
+        }
+
+        .swipe-hint {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            color: rgba(255,255,255,0.5);
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .swipe-area:hover .swipe-hint {
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-b from-[#e0f2fe] via-[#38bdf8] to-[#0c4a6e] relative selection:bg-blue-200 text-slate-800">
@@ -257,6 +283,10 @@
                 </span>
                 <span class="flex items-center gap-3 bg-white/30 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/30 text-white shadow-lg">
                     <div class="w-4 h-4 bg-yellow-400 rounded-full shadow-[0_0_12px_rgba(250,204,21,1)]"></div> Lớp trưởng
+                </span>
+                <span class="flex items-center gap-3 bg-white/30 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/30 text-white shadow-lg">
+                    <div class="w-4 h-4 bg-red-500 rounded-full"></div> Đã khóa
+                </span>
             </div>
         </div>
 
@@ -279,6 +309,9 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
+                    <div id="lock-status-icon" class="hidden bg-red-500/20 p-4 rounded-full">
+                        <i data-lucide="lock" class="w-6 h-6 text-white"></i>
+                    </div>
                     <button onclick="confirmDelete()" id="delete-btn" class="hidden bg-red-500/20 hover:bg-red-500 p-4 rounded-full transition-all group">
                         <i data-lucide="trash-2" class="w-6 h-6 text-white transition-transform"></i>
                     </button>
@@ -330,6 +363,10 @@
         let selectedSlot = null;
         let viewMode = 'view';
         let currentTheme = 'bg-white'; 
+
+        // Biến xử lý swipe
+        let touchStartX = 0;
+        let touchEndX = 0;
 
         // Bảng màu sắc lựa chọn cho giao diện Profile
         const colorThemes = [
@@ -482,7 +519,6 @@
             container.onclick = () => handleOpenSlot(99);
 
             if (teacher) {
-                // Áp dụng màu sắc khung do cô chọn
                 const themeClass = teacher.color_theme || 'bg-white/85 backdrop-blur-3xl';
                 inner.className = `${themeClass} rounded-[4rem] p-12 shadow-2xl border-4 teacher-glow-effect flex flex-col md:flex-row items-center gap-12 transform hover:-translate-y-2 transition-all duration-700`;
                 inner.innerHTML = `
@@ -524,7 +560,8 @@
             
             const themeClass = student?.color_theme || 'bg-white text-blue-900';
             const isMonitor = student?.role === 'monitor';
-            const isEarly = student?.is_early === true; // TRẠNG THÁI TRUY CẬP SỚM
+            const isEarly = student?.is_early === true; 
+            const isLocked = student?.is_locked === true;
             const nameColor = student?.name_color || '';
 
             btn.className = `
@@ -538,7 +575,6 @@
             if (student) {
                 const shortName = student.name.split(' ').slice(-2).join(' ');
                 
-                // NẾU LÀ NGƯỜI TRUY CẬP SỚM , THÊM CÁC NGÔI SAO BẠC BAY LƠ LỬNG
                 let silverStarsHtml = '';
                 if (isEarly) {
                     for(let s=0; s<5; s++) {
@@ -554,13 +590,14 @@
                     <div class="flex flex-col items-center w-full h-full justify-between py-2 relative z-20">
                         ${isMonitor ? '<div class="absolute -top-1 -right-1 z-20"><i data-lucide="crown" class="w-8 h-8 text-yellow-400 fill-yellow-400 drop-shadow-lg"></i></div>' : ''}
                         ${isEarly ? '<div class="absolute -top-1 -left-1 z-20"><i data-lucide="zap" class="w-7 h-7 text-slate-300 fill-white drop-shadow-md"></i></div>' : ''}
+                        ${isLocked ? '<div class="absolute bottom-2 right-2 z-30 bg-red-500 rounded-full p-1 shadow-lg border border-white"><i data-lucide="lock" class="w-3 h-3 text-white"></i></div>' : ''}
                         
                         <div class="w-24 h-24 md:w-28 md:h-28 rounded-[2.5rem] overflow-hidden border-4 ${isEarly ? 'border-slate-200' : 'border-white'} shadow-2xl bg-sky-50 group-hover:rotate-3 transition-transform">
                             ${student.avatar_image ? `<img src="${student.avatar_image}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-sky-200"><i data-lucide="user" class="w-12 h-12"></i></div>`}
                         </div>
                         <div class="w-full">
                             <span class="text-base md:text-lg font-black block truncate px-2" style="color: ${nameColor}">${shortName}</span>
-                            <span class="text-[10px] font-bold opacity-60 block uppercase tracking-tighter">${isMonitor ? 'Lớp Trưởng 6A2' : (isEarly ? 'Truy cập sớm' : '6A2 Long Trường')}</span>
+                            <span class="text-[10px] font-bold opacity-60 block uppercase tracking-tighter">${isMonitor ? 'Lớp Trưởng 6A2' : (isEarly ? 'Truy cập sớm' : (isLocked ? 'Slot đã khóa' : '6A2 Long Trường'))}</span>
                         </div>
                     </div>
                 `;
@@ -620,65 +657,52 @@
                         alert("Ô này chưa có người đăng ký!");
                     } else {
                         try {
-                            const { error } = await supabaseClient
-                                .from('students')
-                                .update({ role: 'monitor' })
-                                .eq('id', slotId);
+                            const { error } = await supabaseClient.from('students').update({ role: 'monitor' }).eq('id', slotId);
                             if (error) throw error;
                             alert(`Đã thiết lập #${slotId + 1} làm Lớp trưởng!`);
                             fetchStudents();
-                        } catch (err) {
-                            alert("Lỗi: " + err.message);
-                        }
+                        } catch (err) { alert("Lỗi: " + err.message); }
                     }
                 } 
-                // LỆNH MỚI: SET_EARLY (ƯU TIÊN VỀ SỚM/NGÔI SAO BẠC)
                 else if (command === 'set_early') {
                     const slotId = parseInt(parts[1]) - 1;
-                    if (isNaN(slotId) || slotId < 0 || slotId >= 50) {
-                        alert("ID không hợp lệ!");
-                    } else if (!students[slotId]) {
-                        alert("Ô này chưa có người đăng ký!");
-                    } else {
+                    if (!isNaN(slotId) && students[slotId]) {
                         try {
-                            const { error } = await supabaseClient
-                                .from('students')
-                                .update({ is_early: true })
-                                .eq('id', slotId);
-                            if (error) throw error;
+                            await supabaseClient.from('students').update({ is_early: true }).eq('id', slotId);
                             alert(`Đã cấp hiệu ứng Ngôi Sao Bạc cho #${slotId + 1}!`);
                             fetchStudents();
-                        } catch (err) {
-                            alert("Lỗi server: " + err.message);
-                        }
+                        } catch (err) { alert("Lỗi server: " + err.message); }
                     }
                 }
-                // LỆNH MỚI: UNSET_EARLY (HỦY ƯU TIÊN)
-                else if (command === 'unset_early') {
+                // LỆNH MỚI: LOCK VÀ UNLOCK DÀNH CHO ADMIN
+                else if (command === 'lock') {
                     const slotId = parseInt(parts[1]) - 1;
-                    if (!isNaN(slotId)) {
+                    if (!isNaN(slotId) && students[slotId]) {
                         try {
-                            await supabaseClient.from('students').update({ is_early: false }).eq('id', slotId);
-                            alert(`Đã hủy trạng thái ưu tiên cho #${slotId + 1}`);
+                            await supabaseClient.from('students').update({ is_locked: true }).eq('id', slotId);
+                            alert(`Đã khóa ô #${slotId + 1}. Chủ sở hữu không thể tự ý chỉnh sửa.`);
                             fetchStudents();
-                        } catch (err) { console.error(err); }
+                        } catch (err) { alert("Lỗi: " + err.message); }
+                    }
+                }
+                else if (command === 'unlock') {
+                    const slotId = parseInt(parts[1]) - 1;
+                    if (!isNaN(slotId) && students[slotId]) {
+                        try {
+                            await supabaseClient.from('students').update({ is_locked: false }).eq('id', slotId);
+                            alert(`Đã mở khóa ô #${slotId + 1}.`);
+                            fetchStudents();
+                        } catch (err) { alert("Lỗi: " + err.message); }
                     }
                 }
                 else if (command === 'set_birthday') {
                     const slotId = parseInt(parts[1]) - 1;
-                    if (students[slotId]) {
-                        birthdayList.add(slotId);
-                        renderGrid();
-                    } else {
-                        alert("Slot không tồn tại!");
-                    }
-                } else if (command === 'stop_birthday') {
+                    if (students[slotId]) { birthdayList.add(slotId); renderGrid(); }
+                } 
+                else if (command === 'stop_birthday') {
                     const slotId = parseInt(parts[1]) - 1;
-                    birthdayList.delete(slotId);
-                    renderGrid();
-                } else {
-                    alert("Lệnh không tồn tại!");
-                }
+                    birthdayList.delete(slotId); renderGrid();
+                } 
                 
                 e.target.value = '';
                 document.getElementById('cmd-line').style.display = 'none';
@@ -694,13 +718,21 @@
             const modal = document.getElementById('modal');
             const editBtn = document.getElementById('edit-btn');
             const deleteBtn = document.getElementById('delete-btn');
+            const lockIcon = document.getElementById('lock-status-icon');
             
             document.getElementById('modal-subtitle').innerText = index === 99 ? `GIÁO VIÊN CHỦ NHIỆM` : `Ô SỐ #${index + 1}`;
             deleteBtn.classList.add('hidden');
+            lockIcon.classList.add('hidden');
 
             if (student) {
                 viewMode = 'view';
-                editBtn.classList.remove('hidden');
+                // Kiểm tra trạng thái khóa
+                if (student.is_locked) {
+                    editBtn.classList.add('hidden');
+                    lockIcon.classList.remove('hidden');
+                } else {
+                    editBtn.classList.remove('hidden');
+                }
                 renderViewContent(student);
             } else {
                 if (index !== 99 && mySlotIndex !== null && students[mySlotIndex]) {
@@ -748,7 +780,10 @@
                 <div class="grid gap-8">
                     <div class="space-y-3">
                         <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3"><i data-lucide="user" class="w-4 h-4 text-blue-400"></i> ${isTeacher ? 'Họ và tên' : 'Tên tớ là...'}</label>
-                        <div class="px-10 py-6 bg-white rounded-[2.5rem] font-black text-4xl shadow-inner border-b-8 border-blue-50" style="color: ${student.name_color || '#1e3a8a'}">${student.name}</div>
+                        <div id="swipe-name-area" class="swipe-area px-10 py-6 bg-white rounded-[2.5rem] font-black text-4xl shadow-inner border-b-8 border-blue-50 relative group" style="color: ${student.name_color || '#1e3a8a'}">
+                            ${student.name}
+                            <span class="swipe-hint">>>> Kéo sang phải để mở khóa</span>
+                        </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-3">
@@ -767,6 +802,61 @@
                 </div>
             `;
             lucide.createIcons();
+            setupSwipeDetection();
+        }
+
+        /**
+         * XỬ LÝ CỬ CHỈ KÉO TỪ TRÁI SANG PHẢI TRÊN TÊN ĐỂ MỞ KHÓA
+         */
+        function setupSwipeDetection() {
+            const nameEl = document.getElementById('swipe-name-area');
+            if (!nameEl) return;
+
+            nameEl.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+
+            nameEl.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipeGesture();
+            });
+
+            // Hỗ trợ cả chuột cho máy tính
+            nameEl.addEventListener('mousedown', (e) => {
+                touchStartX = e.screenX;
+            });
+
+            nameEl.addEventListener('mouseup', (e) => {
+                touchEndX = e.screenX;
+                handleSwipeGesture();
+            });
+        }
+
+        function handleSwipeGesture() {
+            const swipeDistance = touchEndX - touchStartX;
+            const student = students[selectedSlot];
+            
+            // Nếu kéo từ trái sang phải trên 120px và đang bị khóa
+            if (swipeDistance > 120 && student && student.is_locked) {
+                const pass = prompt("Hệ thống: Nhập mật khẩu của ô này để mở khóa chỉnh sửa:");
+                if (pass === student.password) {
+                    processUnlock(selectedSlot);
+                } else if (pass !== null) {
+                    alert("Sai mật khẩu! Không thể mở khóa.");
+                }
+            }
+        }
+
+        async function processUnlock(id) {
+            try {
+                const { error } = await supabaseClient.from('students').update({ is_locked: false }).eq('id', id);
+                if (error) throw error;
+                alert("Mở khóa thành công! Bạn hiện đã có thể chỉnh sửa ô này.");
+                await fetchStudents();
+                handleOpenSlot(id);
+            } catch (err) {
+                alert("Lỗi mở khóa: " + err.message);
+            }
         }
 
         /**
@@ -801,7 +891,6 @@
                 </div>
                 
                 <div class="grid gap-8">
-                    <!-- Bảng màu cho phép thay đổi màu khung (Cả cô và trò đều dùng được) -->
                     <div class="space-y-4">
                         <label class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2 px-3">Bảng phối màu khung thông tin</label>
                         <div class="grid grid-cols-4 sm:grid-cols-8 gap-3" id="theme-selector">
@@ -883,18 +972,13 @@
             lucide.createIcons();
         }
 
-        /**
-         * Xử lý khôi phục mật khẩu nếu lỡ quên
-         */
         function renderForgotPassword() {
             const lockTime = localStorage.getItem('forgot_password_lock');
             const now = Date.now();
-            
             if (lockTime && now < parseInt(lockTime)) {
                 const timeLeft = Math.ceil((parseInt(lockTime) - now) / 1000);
                 const minutes = Math.floor(timeLeft / 60);
                 const seconds = timeLeft % 60;
-
                 const content = document.getElementById('modal-content');
                 content.innerHTML = `
                     <div class="text-center py-20 space-y-6">
@@ -909,11 +993,9 @@
                 lucide.createIcons();
                 return;
             }
-
             const header = document.getElementById('modal-header');
             header.className = 'p-10 flex justify-between items-center text-white bg-gradient-to-r from-amber-400 to-orange-500';
             document.getElementById('modal-title').innerText = 'Khôi Phục';
-
             const content = document.getElementById('modal-content');
             content.innerHTML = `
                 <div class="text-center py-10 space-y-8">
@@ -941,26 +1023,13 @@
             const statusEl = document.getElementById('forgot-status');
             const resultEl = document.getElementById('forgot-result');
             const submitBtn = document.getElementById('forgot-submit-btn');
-
-            if (!inputName) {
-                alert("Hãy nhập tên của bạn!");
-                return;
-            }
-
+            if (!inputName) return alert("Hãy nhập tên của bạn!");
             statusEl.classList.remove('hidden');
             resultEl.classList.add('hidden');
             submitBtn.disabled = true;
-
             try {
-                const { data, error } = await supabaseClient
-                    .from('students')
-                    .select('password')
-                    .eq('id', selectedSlot)
-                    .eq('name', inputName)
-                    .single();
-
-                await new Promise(resolve => setTimeout(resolve, 2000));
-
+                const { data, error } = await supabaseClient.from('students').select('password').eq('id', selectedSlot).eq('name', inputName).single();
+                await new Promise(r => setTimeout(r, 2000));
                 if (error || !data) {
                     statusEl.innerText = "Họ tên không khớp!";
                     statusEl.classList.replace('text-blue-500', 'text-red-500');
@@ -969,14 +1038,10 @@
                     statusEl.classList.add('hidden');
                     resultEl.innerHTML = `<span class="text-sm text-blue-500 block mb-2 font-bold uppercase">Mật khẩu:</span> ${data.password}`;
                     resultEl.classList.remove('hidden');
-                    const lockUntil = Date.now() + (5 * 60 * 1000);
-                    localStorage.setItem('forgot_password_lock', lockUntil.toString());
+                    localStorage.setItem('forgot_password_lock', (Date.now() + 300000).toString());
                     submitBtn.innerText = "Đã tìm thấy!";
                 }
-            } catch (err) {
-                statusEl.innerText = "Lỗi hệ thống!";
-                submitBtn.disabled = false;
-            }
+            } catch (err) { statusEl.innerText = "Lỗi hệ thống!"; submitBtn.disabled = false; }
         }
 
         function verifyPassword() {
@@ -993,28 +1058,18 @@
         function confirmDelete() {
             const student = students[selectedSlot];
             if (!student) return;
-
             const header = document.getElementById('modal-header');
             header.className = 'p-10 flex justify-between items-center text-white bg-rose-600';
             document.getElementById('modal-title').innerText = 'Xóa Profile';
             document.getElementById('delete-btn').classList.add('hidden');
-
             const content = document.getElementById('modal-content');
             content.innerHTML = `
                 <div class="text-center py-12 space-y-8">
-                    <div class="w-28 h-28 bg-rose-100 text-rose-600 rounded-[2.5rem] flex items-center justify-center mx-auto shadow-inner">
-                        <i data-lucide="trash-2" class="w-14 h-14 animate-bounce"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-3xl font-black text-slate-800 uppercase">Xác nhận xóa slot</h4>
-                        <p class="text-slate-500 font-bold mt-2">Nhập chính xác tên <span class="text-rose-600">"${student.name}"</span> để xóa.</p>
-                    </div>
+                    <div class="w-28 h-28 bg-rose-100 text-rose-600 rounded-[2.5rem] flex items-center justify-center mx-auto shadow-inner"><i data-lucide="trash-2" class="w-14 h-14 animate-bounce"></i></div>
+                    <div><h4 class="text-3xl font-black text-slate-800 uppercase">Xác nhận xóa slot</h4><p class="text-slate-500 font-bold mt-2">Nhập chính xác tên <span class="text-rose-600">"${student.name}"</span> để xóa.</p></div>
                     <input id="confirm-name-delete" type="text" placeholder="Nhập tên tại đây..." class="w-full px-8 py-6 bg-white border-4 border-slate-100 focus:border-rose-400 rounded-[2rem] outline-none text-center text-2xl font-black text-rose-600 shadow-xl">
                     <div id="delete-error" class="text-red-500 text-sm font-black hidden">Tên không khớp!</div>
-                    <div class="flex gap-4">
-                        <button onclick="renderEditContent(students[selectedSlot])" class="flex-1 bg-slate-200 text-slate-700 font-black py-6 rounded-[2rem] uppercase text-lg">Hủy</button>
-                        <button onclick="executeDelete()" class="flex-[2] bg-rose-600 text-white font-black py-6 rounded-[2rem] shadow-[0_10px_0_rgb(159,18,57)] uppercase text-lg">Xóa Vĩnh Viễn</button>
-                    </div>
+                    <div class="flex gap-4"><button onclick="renderEditContent(students[selectedSlot])" class="flex-1 bg-slate-200 text-slate-700 font-black py-6 rounded-[2rem] uppercase text-lg">Hủy</button><button onclick="executeDelete()" class="flex-[2] bg-rose-600 text-white font-black py-6 rounded-[2rem] shadow-[0_10px_0_rgb(159,18,57)] uppercase text-lg">Xóa Vĩnh Viễn</button></div>
                 </div>
             `;
             lucide.createIcons();
@@ -1023,32 +1078,21 @@
         async function executeDelete() {
             const inputName = document.getElementById('confirm-name-delete').value;
             const student = students[selectedSlot];
-            
             if (inputName === student.name) {
                 try {
-                    const { error } = await supabaseClient.from('students').delete().eq('id', selectedSlot);
-                    if (error) throw error;
+                    await supabaseClient.from('students').delete().eq('id', selectedSlot);
                     localStorage.removeItem('6A2_my_slot');
                     mySlotIndex = null;
-                    await fetchStudents();
-                    closeModal();
-                } catch (err) {
-                    alert("Lỗi: " + err.message);
-                }
-            } else {
-                document.getElementById('delete-error').classList.remove('hidden');
-            }
+                    await fetchStudents(); closeModal();
+                } catch (err) { alert("Lỗi: " + err.message); }
+            } else { document.getElementById('delete-error').classList.remove('hidden'); }
         }
 
         let currentImageBase64 = null;
-
         function handleImage(input) {
             const file = input.files[0];
             if (file) {
-                if (file.size > 800 * 1024) {
-                    alert("Ảnh quá nặng! Chọn ảnh dưới 800KB nhé.");
-                    return;
-                }
+                if (file.size > 800 * 1024) return alert("Ảnh quá nặng! Chọn ảnh dưới 800KB nhé.");
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     currentImageBase64 = e.target.result;
@@ -1059,22 +1103,16 @@
         }
 
         /**
-         * Lưu dữ liệu vào Supabase (Cập nhật Profile học sinh và GVCN)
+         * Lưu dữ liệu vào Supabase
          */
         async function submitForm() {
             const isTeacher = selectedSlot === 99;
             const name = isTeacher ? "Cô Nguyễn Thị Hồng Nhung" : document.getElementById('form-name').value;
             const password = document.getElementById('form-password').value;
             const btn = document.getElementById('submit-btn');
-
-            if (!name || !password) {
-                alert("Hãy điền tên và đặt mật khẩu!");
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerText = "ĐANG LƯU DỮ LIỆU...";
-
+            if (!name || !password) return alert("Hãy điền tên và đặt mật khẩu!");
+            btn.disabled = true; btn.innerText = "ĐANG LƯU DỮ LIỆU...";
+            
             const studentData = {
                 id: selectedSlot,
                 name: name,
@@ -1085,51 +1123,27 @@
                 color_theme: currentTheme, 
                 avatar_image: currentImageBase64 || (students[selectedSlot]?.avatar_image || null),
                 role: isTeacher ? 'teacher' : (students[selectedSlot]?.role || 'student'),
-                is_early: students[selectedSlot]?.is_early || false // GIỮ NGUYÊN TRẠNG THÁI ƯU TIÊN KHI UPDATE
+                is_early: students[selectedSlot]?.is_early || false,
+                is_locked: students[selectedSlot]?.is_locked || false // GIỮ NGUYÊN TRẠNG THÁI KHÓA KHI UPDATE
             };
 
             try {
                 const { error } = await supabaseClient.from('students').upsert(studentData);
                 if (error) throw error;
-                if (!isTeacher) {
-                    localStorage.setItem('6A2_my_slot', selectedSlot);
-                    mySlotIndex = selectedSlot;
-                }
-                await fetchStudents();
-                closeModal();
-                currentImageBase64 = null;
-            } catch (err) {
-                alert("Lỗi server: " + err.message);
-                btn.disabled = false;
-                btn.innerText = "THỬ LẠI";
-            }
+                if (!isTeacher) { localStorage.setItem('6A2_my_slot', selectedSlot); mySlotIndex = selectedSlot; }
+                await fetchStudents(); closeModal();
+            } catch (err) { alert("Lỗi server: " + err.message); btn.disabled = false; btn.innerText = "THỬ LẠI"; }
         }
 
-        // --- HÀM KHỞI CHẠY KHI TRANG WEB LOAD XONG ---
-        // Hệ thống sẽ tự động quét toàn bộ dữ liệu từ server và render giao diện người dùng
         window.onload = () => {
             initDecorations();
             fetchStudents(); 
-            console.log("Website Lớp 6A2 - Long Trường sẵn sàng!");
-            console.log("Hệ thống lệnh Admin đã được cập nhật: /set_early [ID]");
+            console.log("Website Lớp 6A2 - Long Trường Sẵn Sàng!");
+            console.log("Hệ thống lệnh Admin đã được cập nhật: /lock [ID] và /unlock [ID]");
+            console.log("Mẹo: Tại bảng thông tin, kéo Tên từ trái sang phải để mở khóa nếu có mật khẩu!");
         };
-
-        /**
-         * DATABASE INFORMATION (Supabase):
-         * Bảng: 'students'
-         * Cấu trúc: 
-         * - id (int4, PK)
-         * - name (text)
-         * - birthday (text)
-         * - dream (text)
-         * - hobby (text)
-         * - color_theme (text)
-         * - avatar_image (text, base64)
-         * - role (text)
-         * - password (text)
-         * - name_color (text)
-         * - is_early (boolean) -> Mới thêm để hỗ trợ tính năng ngôi sao bạc
-         */
+        // --- KẾT THÚC FILE ---
+        // Cập nhật Database: Thêm cột is_locked (boolean) vào bảng students.
     </script>
 </body>
 </html>
